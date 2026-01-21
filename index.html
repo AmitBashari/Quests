@@ -1,0 +1,2809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quest Prototype - Idle RPG</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Primal Ancient Palette */
+            --bg-primal: #0c0a09;
+            /* Deep Stone/Dark Earth */
+            --bg-panel: #1c1917;
+            /* Stone Panel */
+            --bg-overlay: rgba(28, 25, 23, 0.85);
+            --bg-card: #292524;
+            /* Lighter Stone */
+
+            /* Accents */
+            --accent-nature: #10b981;
+            /* Jungle Green */
+            --accent-evolution: #0ea5e9;
+            /* Magic Blue */
+            --accent-legendary: #f59e0b;
+            /* Ancient Gold */
+            --accent-danger: #ef4444;
+            /* Alert Red */
+            --accent-void: #7c3aed;
+            /* Mystic Purple */
+
+            /* Text */
+            --text-primary: #f5f5f4;
+            /* Stone White */
+            --text-secondary: #a8a29e;
+            /* Worn Stone */
+            --text-muted: #57534e;
+            /* Deep Shadow text */
+
+            /* Borders & Effects */
+            --border-stone: #44403c;
+            --border-gold: #78350f;
+            /* Bronze/Dark Gold */
+
+            --font-header: 'Cinzel', serif;
+            --font-body: 'Manrope', sans-serif;
+
+            --shadow-deep: 0 10px 30px -10px rgba(0, 0, 0, 0.9);
+            --glow-nature: 0 0 20px rgba(16, 185, 129, 0.4);
+            --glow-evolution: 0 0 25px rgba(14, 165, 233, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: #0f0f13;
+            /* Atmospheric background pattern */
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 40%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23292524' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+            overflow-x: auto;
+            color: var(--text-primary);
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow:
+                0 0 0 4px #262626,
+                0 0 0 10px #0f0f13,
+                0 20px 50px rgba(0, 0, 0, 0.6);
+            border: 2px solid #525252;
+            flex-shrink: 0;
+        }
+
+        .phone-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background:
+                radial-gradient(circle at 50% 120%, rgba(14, 165, 233, 0.15), transparent 70%),
+                radial-gradient(circle at 50% -20%, rgba(16, 185, 129, 0.1), transparent 70%),
+                var(--bg-primal);
+            gap: 40px;
+            position: relative;
+        }
+
+        .main-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        .main-title {
+            font-family: var(--font-header);
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(180deg, #fef3c7 0%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.3));
+        }
+
+        .quest-icon-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #292524, #1c1917);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid var(--border-stone);
+            box-shadow:
+                0 10px 0 #0f0f13,
+                0 20px 25px -5px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .quest-icon-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .quest-icon-btn:hover {
+            transform: translateY(4px);
+            box-shadow: 0 6px 0 #0f0f13, 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border-color: var(--accent-legendary);
+        }
+
+        .quest-icon-btn:hover .icon {
+            filter: drop-shadow(0 0 12px var(--accent-legendary));
+            transform: scale(1.1);
+        }
+
+        .quest-icon-btn:active {
+            transform: translateY(10px);
+            box-shadow: 0 0 0 #0f0f13;
+            background: #1c1917;
+        }
+
+        .quest-icon-btn .icon {
+            font-size: 42px;
+            transition: all 0.3s ease;
+        }
+
+        .quest-icon-btn .label {
+            font-family: var(--font-header);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .red-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-danger);
+            border-radius: 50%;
+            top: 10px;
+            right: 10px;
+            border: 2px solid var(--bg-panel);
+            box-shadow: 0 0 8px var(--accent-danger);
+            animation: redDotPulse 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes redDotPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        .quest-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 10, 9, 0.95);
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+
+        .quest-modal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .quest-modal.active {
+            display: flex;
+            animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            background: radial-gradient(circle at top center, #facc15 0%, #b45309 40%, #451a03 100%);
+            border-bottom: 2px solid var(--accent-legendary);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(234, 179, 8, 0.3);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 20%);
+            mix-blend-mode: overlay;
+            animation: shimmer 8s infinite linear;
+        }
+
+        .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #fbbf24, transparent);
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        .modal-title {
+            font-family: var(--font-header);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-legendary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .exit-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #292524;
+            border: 1px solid var(--border-stone);
+            color: var(--text-secondary);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 0 #0c0a09;
+        }
+
+        .exit-btn:hover {
+            background: #44403c;
+            color: var(--text-primary);
+            border-color: var(--accent-legendary);
+            transform: translateY(1px);
+        }
+
+        .tab-bar {
+            display: flex;
+            padding: 12px 16px 0;
+            gap: 8px;
+            background: transparent;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 8px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 4px;
+            background: rgba(28, 25, 23, 0.6);
+            border: 1px solid var(--border-stone);
+            border-bottom: none;
+            color: var(--text-secondary);
+            font-family: var(--font-header);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            border-radius: 8px 8px 0 0;
+            text-transform: uppercase;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-legendary);
+            background: linear-gradient(to top, #292524, #1c1917);
+            border-color: var(--accent-legendary);
+            border-bottom: 1px solid #292524;
+            z-index: 2;
+            box-shadow: 0 -4px 15px rgba(245, 158, 11, 0.15);
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+            background: rgba(68, 64, 60, 0.6);
+        }
+
+        .tab-btn.has-reward {
+            animation: tabRewardPulse 2s infinite;
+            border-color: var(--accent-legendary);
+            color: var(--accent-legendary);
+        }
+
+        @keyframes tabRewardPulse {
+            0% {
+                box-shadow: inset 0 0 0 rgba(251, 191, 36, 0);
+                background-color: #334155;
+            }
+
+            50% {
+                box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.3);
+                background-color: #451a03;
+            }
+
+            100% {
+                box-shadow: inset 0 0 0 rgba(251, 191, 36, 0);
+                background-color: #334155;
+            }
+        }
+
+        .tab-btn .tab-red-dot {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-danger);
+            border-radius: 50%;
+            animation: redDotPulse 1.5s infinite;
+            box-shadow: 0 0 6px var(--accent-danger);
+        }
+
+        .tab-btn .tab-indicator {
+            font-size: 10px;
+            margin-left: 4px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: var(--accent-legendary);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .progress-section {
+            padding: 24px;
+            background: linear-gradient(135deg, #201d1b, #151311);
+            margin: 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-stone);
+            box-shadow:
+                inset 0 0 20px rgba(0, 0, 0, 0.8),
+                0 4px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .progress-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 19px;
+            pointer-events: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .activity-label {
+            font-family: var(--font-header);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .activity-points {
+            font-family: var(--font-header);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-legendary);
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .timer-display {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 500;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-track {
+            position: relative;
+            height: 16px;
+            background: #0f0f10;
+            border-radius: 10px;
+            margin-bottom: 32px;
+            overflow: hidden;
+            border: 1px solid var(--border-stone);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #059669, #34d399);
+            border-radius: 20px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.4) 0%, transparent 10%),
+                radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 15%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.3) 0%, transparent 10%);
+            background-size: 150% 100%;
+            animation: magmaFlow 2s infinite linear;
+            opacity: 0.8;
+        }
+
+        @keyframes magmaFlow {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -50% 0;
+            }
+        }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translate(50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: #a7f3d0;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #34d399;
+            filter: blur(2px);
+        }
+
+        .progress-fill.animate {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chest-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4px;
+            position: relative;
+        }
+
+        /* Guide line behind chests */
+        .chest-row::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: #292524;
+            z-index: 0;
+            transform: translateY(-50%);
+            border-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chest-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chest-item:hover {
+            transform: scale(1.1) translateY(-2px);
+        }
+
+        .chest-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            transition: all 0.3s ease;
+            position: relative;
+            background: #1c1917;
+            border: 2px solid var(--border-stone);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .chest-icon.locked {
+            opacity: 0.7;
+            filter: grayscale(0.8) sepia(0.2);
+        }
+
+        .chest-icon.available {
+            border-color: var(--accent-legendary);
+            background: radial-gradient(circle, #78350f 0%, #292524 100%);
+            box-shadow: var(--glow-reward);
+            animation: chestPulse 2s infinite;
+            z-index: 5;
+        }
+
+        @keyframes chestPulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));
+                border-color: var(--accent-gold);
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: drop-shadow(0 0 15px rgba(251, 191, 36, 1));
+                border-color: #fff;
+            }
+
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));
+                border-color: var(--accent-gold);
+            }
+        }
+
+        .chest-icon.claimed {
+            border-color: var(--accent-nature);
+            background: radial-gradient(circle, #064e3b 0%, #1c1917 100%);
+            opacity: 0.9;
+            filter: grayscale(0.3);
+        }
+
+        /* SVG Icon styling within chests */
+        .chest-icon svg {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+        }
+
+        .chest-icon .chest-red-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            border: 2px solid var(--bg-panel);
+            box-shadow: 0 0 8px var(--accent-red);
+            animation: redDotPulse 2s infinite;
+        }
+
+        .chest-points {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-family: var(--font-header);
+            background: #0f1115;
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 12px 20px;
+        }
+
+        .task-item {
+            background: linear-gradient(to right, #292524, #1c1917);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid var(--border-stone);
+            box-shadow: 0 4px 0 #0f0f13;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border-stone);
+            transition: background 0.3s;
+        }
+
+        .task-item:hover {
+            background: #2e2a28;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -4px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .task-item:hover::before {
+            background: var(--accent-evolution);
+        }
+
+        .task-item.collected {
+            opacity: 0.5;
+            order: 100;
+            filter: grayscale(0.8);
+            border-color: transparent;
+            background: #151311;
+            box-shadow: none;
+        }
+
+        .task-item.ready-to-claim {
+            order: -2;
+            border-color: var(--accent-legendary);
+            background: radial-gradient(circle at center, #451a03 0%, #1c1917 100%);
+            box-shadow: 0 0 0 1px var(--accent-legendary), 0 4px 12px rgba(251, 191, 36, 0.2);
+            animation: taskReadyPulse 3s infinite;
+        }
+
+        @keyframes taskReadyPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 1px var(--accent-legendary), 0 4px 12px rgba(251, 191, 36, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 0 1px var(--accent-legendary), 0 4px 25px rgba(251, 191, 36, 0.4);
+            }
+        }
+
+        .task-item.ready-to-claim::before {
+            background: var(--accent-legendary);
+        }
+
+        .task-item.in-progress {
+            order: -1;
+        }
+
+        .task-item.all-completed {
+            border-color: var(--accent-nature);
+        }
+
+        .all-completed-banner {
+            background: linear-gradient(90deg, #065f46, #047857);
+            color: #d1fae5;
+            text-align: center;
+            padding: 16px;
+            margin: 0 12px 16px;
+            border-radius: 12px;
+            font-family: var(--font-header);
+            font-weight: 700;
+            border: 1px solid var(--accent-nature);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+            animation: completedBanner 3s infinite;
+        }
+
+        @keyframes completedBanner {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(34, 197, 94, 0.7);
+            }
+        }
+
+        .task-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            background: #2b2624;
+            border: 1px solid var(--border-stone);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .task-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 11px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .task-icon svg {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6));
+            opacity: 0.9;
+        }
+
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-family: var(--font-body);
+        }
+
+        .task-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #0f0f10;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .task-progress-fill {
+            height: 100%;
+            background: var(--accent-evolution);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-evolution);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-20deg);
+            width: 20px;
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 200%;
+            }
+        }
+
+        .task-progress-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .task-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .task-points {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-legendary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .go-btn {
+            padding: 8px 24px;
+            border-radius: 8px;
+            background: #292524;
+            border: 1px solid var(--border-stone);
+            color: var(--text-primary);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 0 #0f0f13;
+            font-family: var(--font-header);
+        }
+
+        .go-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0f0f13;
+            background: #44403c;
+            border-color: var(--text-secondary);
+        }
+
+        .go-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .go-btn.claim {
+            background: var(--accent-legendary);
+            color: #451a03;
+            border-color: #f59e0b;
+            box-shadow: 0 4px 0 #92400e, 0 0 20px rgba(245, 158, 11, 0.4);
+            animation: claimPulse 2s infinite;
+        }
+
+        .go-btn.claim:hover {
+            background: #fbbf24;
+            box-shadow: 0 2px 0 #92400e, 0 0 30px rgba(245, 158, 11, 0.6);
+            transform: translateY(2px);
+        }
+
+        @keyframes claimPulse {
+            0% {
+                box-shadow: 0 4px 0 #92400e, 0 0 0 0 rgba(251, 191, 36, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 4px 0 #92400e, 0 0 0 10px rgba(251, 191, 36, 0);
+            }
+
+            100% {
+                box-shadow: 0 4px 0 #92400e, 0 0 0 0 rgba(251, 191, 36, 0);
+            }
+        }
+
+        .go-btn.done {
+            background: transparent;
+            border: 1px solid #374151;
+            color: #6b7280;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .go-btn.done:hover {
+            transform: none;
+        }
+
+        .empty-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            gap: 16px;
+        }
+
+        .empty-tab .icon {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+
+        .empty-tab .text {
+            font-size: 14px;
+        }
+
+        /* ========== SESSION TAB STYLES ========== */
+        .session-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #201d1b, #151311);
+            border-radius: 16px;
+            border: 1px solid var(--border-stone);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .session-timer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .session-timer-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .session-timer-value {
+            font-family: var(--font-header);
+            font-size: 20px;
+            font-weight: 700;
+            color: #e0f2fe;
+            background: radial-gradient(circle, #0284c7 0%, #0c4a6e 100%);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid #7dd3fc;
+            min-width: 90px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: corePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes corePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(14, 165, 233, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(14, 165, 233, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.4);
+                border-color: #bae6fd;
+            }
+        }
+
+        .session-timer-value::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 14px;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            animation: coreRipple 2s linear infinite;
+        }
+
+        @keyframes coreRipple {
+            0% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .session-level {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .session-level-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .session-level-value {
+            font-family: var(--font-header);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-legendary);
+            background: linear-gradient(135deg, #451a03, #1c1917);
+            padding: 4px 14px;
+            border-radius: 8px;
+            border: 2px solid var(--accent-legendary);
+            min-width: 50px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+
+        .session-main {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Vertical Progress Bar */
+        .session-progress-track {
+            width: 20px;
+            background: #1c1917;
+            border-radius: 10px;
+            border: 1px solid var(--border-stone);
+            position: relative;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .session-progress-fill {
+            width: 100%;
+            background: linear-gradient(0deg, #0ea5e9, #60a5fa);
+            border-radius: 10px;
+            transition: height 0.5s ease;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .session-progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.5) 0%, transparent 15%),
+                radial-gradient(circle at 30% 60%, rgba(255, 255, 255, 0.3) 0%, transparent 10%);
+            background-size: 100% 150%;
+            animation: sapRise 3s infinite linear;
+        }
+
+        @keyframes sapRise {
+            0% {
+                background-position: 0 100%;
+            }
+
+            100% {
+                background-position: 0 -50%;
+            }
+        }
+
+        .session-progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background: #bae6fd;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #7dd3fc;
+            filter: blur(2px);
+            z-index: 2;
+        }
+
+        /* Milestone List */
+        .session-milestones {
+            flex: 1;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .session-milestone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(28, 25, 23, 0.6);
+            border-radius: 12px;
+            border: 1px solid var(--border-stone);
+            transition: all 0.3s ease;
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+
+        .session-milestone.locked {
+            opacity: 0.5;
+            filter: grayscale(0.5);
+            background: rgba(12, 10, 9, 0.4);
+        }
+
+        .session-milestone.unlocked {
+            border-color: var(--accent-legendary);
+            background: radial-gradient(circle at left, #451a03 0%, #1c1917 80%);
+            animation: milestoneGlow 3s infinite;
+        }
+
+        @keyframes milestoneGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.2);
+                border-color: rgba(251, 191, 36, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 15px 0 rgba(251, 191, 36, 0.3);
+                border-color: rgba(251, 191, 36, 1);
+            }
+        }
+
+        .session-milestone.claimed {
+            border-color: var(--accent-nature);
+            background: linear-gradient(90deg, rgba(6, 78, 59, 0.3), transparent);
+        }
+
+        .session-milestone.is-choice {
+            border-width: 1px;
+            border-color: var(--accent-void);
+        }
+
+        .session-milestone.is-choice.unlocked {
+            animation: choicePulse 2s infinite;
+        }
+
+        @keyframes choicePulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.3);
+                border-color: var(--accent-void);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 0 rgba(124, 58, 237, 0.4);
+                border-color: #a78bfa;
+            }
+        }
+
+        .milestone-time {
+            font-family: var(--font-header);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 55px;
+        }
+
+        .milestone-reward {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .milestone-reward-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #161b22;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .milestone-reward-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .milestone-btn {
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-stone);
+            background: #374151;
+            color: var(--text-secondary);
+            font-family: var(--font-header);
+        }
+
+        .milestone-btn.claim {
+            background: var(--accent-legendary);
+            color: #451a03;
+            border-color: #b45309;
+            box-shadow: 0 2px 0 #92400e;
+            animation: claimPulse 2s infinite;
+        }
+
+        .milestone-btn.claim:hover {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 #92400e;
+        }
+
+        .milestone-btn.choose {
+            background: var(--accent-void);
+            color: white;
+            border-color: #6d28d9;
+            box-shadow: 0 2px 0 #5b21b6;
+        }
+
+        .milestone-btn.choose:hover {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 #5b21b6;
+        }
+
+        .milestone-btn.claimed {
+            background: transparent;
+            border-color: var(--accent-nature);
+            color: var(--accent-nature);
+            cursor: default;
+        }
+
+        /* Active Effects Section */
+        .session-effects {
+            background: rgba(28, 25, 23, 0.4);
+            border-radius: 12px;
+            border: 1px solid var(--border-stone);
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .session-effects-title {
+            font-family: var(--font-header);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+
+        .session-effect {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .session-effect:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .session-effect:last-child {
+            margin-bottom: 0;
+        }
+
+        .effect-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-evolution), #0369a1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .effect-info {
+            flex: 1;
+        }
+
+        .effect-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-header);
+        }
+
+        .effect-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .effect-timer {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-legendary);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .no-effects {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px;
+        }
+
+        .reward-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+
+        .reward-popup-overlay.active {
+            display: flex;
+        }
+
+        /* Choice Picker Popup */
+        .choice-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+
+        .choice-popup-overlay.active {
+            display: flex;
+        }
+
+        .choice-popup {
+            background: linear-gradient(135deg, #1c1917 0%, #0c0a09 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            width: 340px;
+            border: 2px solid var(--accent-void);
+            animation: popupEntry 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow:
+                0 0 60px rgba(124, 58, 237, 0.2),
+                0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .choice-popup::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 20px;
+            z-index: -1;
+            background: linear-gradient(45deg, var(--accent-void), transparent, var(--accent-void));
+            opacity: 0.3;
+            animation: borderRotate 4s linear infinite;
+        }
+
+        .choice-popup h3 {
+            color: var(--accent-void);
+            font-family: var(--font-header);
+            font-size: 24px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .choice-popup p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 24px;
+            font-family: var(--font-body);
+        }
+
+        .choice-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .choice-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: linear-gradient(to right, #292524, #1c1917);
+            border: 1px solid var(--border-stone);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-option:hover {
+            border-color: var(--accent-void);
+            background: #2e2a28;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .choice-option-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-void), #4c1d95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .reward-popup {
+            background: radial-gradient(circle at center, #1c1917 0%, #0c0a09 100%);
+            border-radius: 24px;
+            padding: 48px 32px;
+            text-align: center;
+            min-width: 320px;
+            border: 2px solid var(--accent-legendary);
+            animation: popupEntry 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 80px rgba(245, 158, 11, 0.2), 0 0 0 1px #78350f;
+            position: relative;
+        }
+
+        .reward-popup::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 60%);
+            animation: rotateLight 10s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .reward-popup::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            bottom: -4px;
+            left: -4px;
+            right: -4px;
+            border: 1px solid var(--accent-gold);
+            border-radius: 20px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @keyframes popupEntry {
+            0% {
+                transform: scale(0.8) translateY(20px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .reward-popup h3 {
+            color: var(--accent-legendary);
+            font-family: var(--font-header);
+            font-size: 28px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+            letter-spacing: 4px;
+        }
+
+        .reward-items {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .reward-item .icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #451a03, #1c1917);
+            border: 2px solid var(--accent-legendary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            box-shadow:
+                0 10px 20px rgba(0, 0, 0, 0.6),
+                inset 0 0 20px rgba(251, 191, 36, 0.2);
+            position: relative;
+        }
+
+        .reward-item .icon svg {
+            width: 48px;
+            height: 48px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+        }
+
+        .reward-item .amount {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 16px;
+            font-family: var(--font-header);
+            text-shadow: 0 2px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .reward-popup .close-btn {
+            padding: 14px 48px;
+            border-radius: 10px;
+            background: var(--accent-legendary);
+            border: 1px solid #b45309;
+            color: #451a03;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: var(--font-header);
+            letter-spacing: 2px;
+            box-shadow: 0 6px 0 #92400e, 0 0 20px rgba(245, 158, 11, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .reward-popup .close-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 4px 0 #92400e, 0 0 30px rgba(245, 158, 11, 0.5);
+            background: #fbbf24;
+        }
+
+        .reward-popup .close-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+
+        /* Debug Panel - Collapsible */
+        .debug-toggle {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: #1a1a2e;
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .debug-toggle:hover {
+            background: var(--accent-primary);
+        }
+
+        .debug-panel {
+            position: fixed;
+            left: -320px;
+            top: 20px;
+            width: 300px;
+            background: #0d0d1a;
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid #333;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 99;
+        }
+
+        .debug-panel.open {
+            left: 20px;
+        }
+
+        .debug-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .debug-section {
+            margin-bottom: 16px;
+        }
+
+        .debug-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .debug-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .debug-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-primary);
+        }
+
+        .debug-btn.danger {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .debug-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .debug-btn.success {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .debug-btn.success:hover {
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        .debug-btn-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .debug-btn-row .debug-btn {
+            flex: 1;
+            text-align: center;
+        }
+
+        .debug-info {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        .debug-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .debug-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .debug-info-label {
+            color: var(--text-muted);
+        }
+
+        .debug-info-value {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .tab-quick-btns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .tab-quick-btns .debug-btn {
+            text-align: center;
+            padding: 6px;
+            font-size: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        .rotate-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            color: var(--text-primary);
+        }
+
+        .rotate-message .icon {
+            font-size: 64px;
+            animation: rotate 2s infinite;
+        }
+
+        @keyframes rotate {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-20deg);
+            }
+
+            75% {
+                transform: rotate(20deg);
+            }
+        }
+
+        @media (max-width: 500px) and (orientation: landscape) {
+            .rotate-message {
+                display: flex;
+            }
+
+            body>*:not(.rotate-message) {
+                display: none !important;
+            }
+        }
+
+        @keyframes popupEntry {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes borderRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes rotateLight {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -60px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="rotate-message">
+        <div class="icon">📱</div>
+        <div>Please rotate your device to portrait mode</div>
+    </div>
+
+    <!-- Debug Toggle Button -->
+    <button class="debug-toggle" onclick="toggleDebugPanel()">🛠️</button>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+        <div class="debug-title">🛠️ Debug Panel</div>
+        <div class="debug-section">
+            <div class="debug-section-title">Tab Navigation</div>
+            <div class="tab-quick-btns">
+                <button class="debug-btn" onclick="switchTab('session')">Session</button>
+                <button class="debug-btn" onclick="switchTab('daily')">Daily</button>
+                <button class="debug-btn" onclick="switchTab('weekly')">Weekly</button>
+                <button class="debug-btn" onclick="switchTab('monthly')">Monthly</button>
+            </div>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">Progress Controls</div>
+            <div class="debug-btn-row">
+                <button class="debug-btn success" onclick="addPoints(10)">+10</button>
+                <button class="debug-btn success" onclick="addPoints(20)">+20</button>
+            </div>
+            <div class="debug-btn-row">
+                <button class="debug-btn danger" onclick="addPoints(-10)">-10</button>
+                <button class="debug-btn danger" onclick="addPoints(-20)">-20</button>
+            </div>
+            <button class="debug-btn" onclick="setPoints(100)">Set to 100 pts</button>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">Task Controls</div>
+            <button class="debug-btn" onclick="progressNextTask()">Progress Next Task</button>
+            <button class="debug-btn success" onclick="completeNextTask()">Complete Next Task</button>
+            <button class="debug-btn success" onclick="completeAllTasks()">Complete All Tasks</button>
+            <button class="debug-btn" onclick="claimNextReadyTask()">Claim Next Ready</button>
+        </div>
+        <div class="debug-section" id="session-debug-section">
+            <div class="debug-section-title">Session Time</div>
+            <div class="debug-btn-row">
+                <button class="debug-btn success" onclick="addSessionTime(5)">+5 min</button>
+                <button class="debug-btn success" onclick="addSessionTime(30)">+30 min</button>
+            </div>
+            <button class="debug-btn" onclick="setSessionTime(60)">Set to 60 min</button>
+            <button class="debug-btn" onclick="showChoicePopup()">Trigger Choice Popup</button>
+            <button class="debug-btn danger" onclick="resetSession()">Reset Session</button>
+            <div class="debug-btn-row">
+                <button class="debug-btn" onclick="changePlayerLevel(-1)">Lv −</button>
+                <button class="debug-btn success" onclick="changePlayerLevel(1)">Lv +</button>
+            </div>
+        </div>
+
+
+        <div class="debug-section">
+            <div class="debug-section-title">Chest Controls</div>
+            <button class="debug-btn" onclick="claimAvailableChests()">Claim Available</button>
+            <button class="debug-btn" onclick="claimAllChests()">Claim All</button>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">Reset</div>
+            <button class="debug-btn danger" onclick="resetCurrentTab()">Reset Tab</button>
+            <button class="debug-btn danger" onclick="resetAll()">Reset All</button>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">State</div>
+            <div class="debug-info">
+                <div class="debug-info-row"><span class="debug-info-label">Tab:</span><span class="debug-info-value"
+                        id="debug-current-tab">session</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Points:</span><span class="debug-info-value"
+                        id="debug-current-points">0</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Chests:</span><span class="debug-info-value"
+                        id="debug-chests-claimed">0/5</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Tasks:</span><span class="debug-info-value"
+                        id="debug-tasks-done">0/0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phone Frame -->
+    <div class="phone-frame">
+        <div class="phone-content">
+            <div class="main-screen" id="mainScreen">
+                <div class="main-title">Main Screen</div>
+                <button class="quest-icon-btn" onclick="openQuestModal()">
+                    <span class="icon">📜</span>
+                    <span class="label">Quests</span>
+                    <span class="red-dot" id="mainRedDot" style="display:none;"></span>
+                </button>
+            </div>
+            <div class="quest-modal" id="questModal">
+                <div class="modal-header">
+                    <div class="modal-title">📜 Quests</div>
+                    <button class="exit-btn" onclick="closeQuestModal()">✕</button>
+                </div>
+                <div class="tab-bar">
+                    <button class="tab-btn active" data-tab="session" onclick="switchTab('session')">Session<span
+                            class="tab-red-dot" style="display:none;"></span></button>
+
+                    <button class="tab-btn" data-tab="daily" onclick="switchTab('daily')">Daily<span class="tab-red-dot"
+                            style="display:none;"></span></button>
+                    <button class="tab-btn" data-tab="weekly" onclick="switchTab('weekly')">Weekly<span
+                            class="tab-red-dot" style="display:none;"></span></button>
+                    <button class="tab-btn" data-tab="monthly" onclick="switchTab('monthly')">Monthly<span
+                            class="tab-red-dot" style="display:none;"></span></button>
+                </div>
+                <div class="tab-content active" id="tab-session">
+                    <div class="session-container">
+                        <div class="session-header">
+                            <div class="session-timer">
+                                <span class="session-timer-label">Next Reward:</span>
+                                <span class="session-timer-value" id="session-next-timer">--:--</span>
+                            </div>
+                        </div>
+
+                        <div class="session-main">
+                            <div class="session-progress-track">
+                                <div class="session-progress-fill" id="session-progress-fill" style="height: 0%"></div>
+                            </div>
+                            <div class="session-milestones" id="session-milestones"></div>
+                        </div>
+                        <div class="session-effects" id="session-effects">
+                            <div class="session-effects-title">Active Boosts</div>
+                            <div id="session-effects-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-daily">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div><span class="activity-label">Daily Activity</span>
+                                <div class="timer-display">Resets at 00:00</div>
+                            </div>
+                            <div class="activity-points" id="daily-points">0/100</div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="daily-progress-fill"></div>
+                        </div>
+                        <div class="chest-row" id="daily-chests"></div>
+                    </div>
+                    <div id="daily-complete-banner"></div>
+                    <div class="task-list" id="daily-tasks"></div>
+                </div>
+                <div class="tab-content" id="tab-weekly">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div><span class="activity-label">Weekly Activity</span>
+                                <div class="timer-display" id="weekly-timer"></div>
+                            </div>
+                            <div class="activity-points" id="weekly-points">0/100</div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="weekly-progress-fill"></div>
+                        </div>
+                        <div class="chest-row" id="weekly-chests"></div>
+                    </div>
+                    <div id="weekly-complete-banner"></div>
+                    <div class="task-list" id="weekly-tasks"></div>
+                </div>
+                <div class="tab-content" id="tab-monthly">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div><span class="activity-label">Monthly Activity</span>
+                                <div class="timer-display" id="monthly-timer"></div>
+                            </div>
+                            <div class="activity-points" id="monthly-points">0/100</div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="monthly-progress-fill"></div>
+                        </div>
+                        <div class="chest-row" id="monthly-chests"></div>
+                    </div>
+                    <div id="monthly-complete-banner"></div>
+                    <div class="task-list" id="monthly-tasks"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Popup -->
+    <div class="reward-popup-overlay" id="rewardPopup">
+        <div class="reward-popup">
+            <h3>🎉 Chest Reward!</h3>
+            <div class="reward-items" id="rewardItems"></div>
+            <button class="close-btn" onclick="closeRewardPopup()">Collect</button>
+        </div>
+    </div>
+
+    <!-- Choice Picker Popup -->
+    <div class="choice-popup-overlay" id="choicePopup">
+        <div class="choice-popup">
+            <h3>✨ Choose Your Boost</h3>
+            <p>60 minutes of playtime achieved! Select a temporary boost:</p>
+            <div class="choice-options" id="choiceOptions"></div>
+        </div>
+    </div>
+
+    <script>
+        // Helper to generate consistent SVG icons
+        const IB = (path, color = "currentColor", size = 24) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-icon">${path}</svg>`;
+
+        const icons = {
+            chest: '<path d="M21 8a2 2 0 0 1-1.95 1.57L13 10V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6zm-9.39-4C10.74 3.46 9.4 3 8 3a7 7 0 0 0-7 7v9a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2v-4a7 7 0 0 0-1.39-4.01M13 14h-2m2 4h-2"/>',
+            scroll: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>',
+            sword: '<polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/>',
+            shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+            gem: '<path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/>',
+            skull: '<path d="M22 10.3c0-3.6-3.8-6.3-8-6.3h-4C5.8 4 2 6.7 2 10.3c0 .8.2 1.6.5 2.3l.3.8c.2.6.5 1.2.6 1.8.8 2.6 3.6 4.8 6.6 4.8h4c3 0 5.8-2.2 6.6-4.8.1-.6.4-1.2.6-1.8l.3-.8c.3-.7.5-1.5.5-2.3z"/><circle cx="9.5" cy="10.5" r="1.5"/><circle cx="14.5" cy="10.5" r="1.5"/><path d="M12 15h.01"/>',
+            calendar: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+            energy: '<polyline points="13 2 9 8 13 14 7 24"/><path d="M13 14h6L13 2v6h-6"/>',
+            potion: '<path d="M19 22H5l3-9V9a4 4 0 0 1 8 0v4l3 9z"/><path d="M9 2v4"/><path d="M15 2v4"/><path d="M12 2v6"/>',
+            book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+            castle: '<path d="M19 21v-8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8"/><path d="M12 11V7a2 2 0 0 1 2-2h1"/><path d="M9 7h1"/><path d="M5 21h14"/><path d="M5 21V7a2 2 0 0 1 2-2h1m8 16V7a2 2 0 0 0-2-2h-1"/>',
+            star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+            pet: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+            hammer: '<path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 6.35A3.01 3.01 0 0 0 15 11l-1 1 1 1 5.35-5.35a3.01 3.01 0 0 0-2.71-1.3z"/><path d="M12 9l-3-3a3 3 0 0 0-4.24 4.24l3 3"/>',
+            crown: '<path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>',
+            check: '<polyline points="20 6 9 17 4 12"/>',
+            gift: '<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>'
+        };
+
+        const questData = {
+            daily: {
+                tasks: [
+                    { id: 'd1', name: 'Collect AFK Chest', icon: IB(icons.chest, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'd2', name: 'Claim Daily Login', icon: IB(icons.calendar, '#3b82f6'), color: '#3b82f6', target: 5 },
+                    { id: 'd3', name: 'Claim Free Shop Pack', icon: IB(icons.gift, '#f59e0b'), color: '#f59e0b', target: 5 },
+                    { id: 'd4', name: 'Play Frozen Maw', icon: IB(icons.sword, '#06b6d4'), color: '#06b6d4', target: 5 },
+                    { id: 'd5', name: 'Play Cursed Heartwood', icon: IB(icons.shield, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'd6', name: 'Play Hall of Tomes', icon: IB(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'd7', name: 'Attempt Doom Tower', icon: IB(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'd8', name: 'Fight Clan Boss', icon: IB(icons.crown, '#dc2626'), color: '#dc2626', target: 5 },
+                    { id: 'd9', name: 'Use Multi Battle Token', icon: IB(icons.energy, '#7c3aed'), color: '#7c3aed', target: 5 },
+                    { id: 'd10', name: 'Pull Skill', icon: IB(icons.star, '#ec4899'), color: '#ec4899', target: 5 },
+                    { id: 'd11', name: 'Pull Pet', icon: IB(icons.pet, '#f97316'), color: '#f97316', target: 5 },
+                    { id: 'd12', name: 'Use Cores', icon: IB(icons.gem, '#6366f1'), color: '#6366f1', target: 5 }
+                ],
+                points: 0, chests: [false, false, false, false, false], taskProgress: {}, claimed: {}
+            },
+            weekly: {
+                tasks: [
+                    { id: 'w1', name: 'Complete Daily Quests', icon: IB(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
+                    { id: 'w2', name: 'Play Frozen Maw', icon: IB(icons.sword, '#06b6d4'), color: '#06b6d4', target: 5 },
+                    { id: 'w3', name: 'Play Cursed Heartwood', icon: IB(icons.shield, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'w4', name: 'Play Hall of Tomes', icon: IB(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'w5', name: 'Attempt Doom Tower', icon: IB(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'w6', name: 'Deal Clan Boss Damage', icon: IB(icons.crown, '#dc2626'), color: '#dc2626', target: 5 },
+                    { id: 'w7', name: 'Reach New Dungeon Level', icon: IB(icons.castle, '#f59e0b'), color: '#f59e0b', target: 5 },
+                    { id: 'w8', name: 'Gain Player XP', icon: IB(icons.star, '#fbbf24'), color: '#fbbf24', target: 5 },
+                    { id: 'w9', name: 'Evolve Skills', icon: IB(icons.potion, '#ec4899'), color: '#ec4899', target: 5 },
+                    { id: 'w10', name: 'Evolve Pets', icon: IB(icons.pet, '#f97316'), color: '#f97316', target: 5 },
+                    { id: 'w11', name: 'Use Speed Up Tickets', icon: IB(icons.energy, '#3b82f6'), color: '#3b82f6', target: 5 },
+                    { id: 'w12', name: 'Use Forge', icon: IB(icons.hammer, '#78716c'), color: '#78716c', target: 5 }
+                ],
+                points: 0, chests: [false, false, false, false, false], taskProgress: {}, claimed: {}
+            },
+            monthly: {
+                tasks: [
+                    { id: 'm1', name: 'Complete Daily Quests', icon: IB(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
+                    { id: 'm2', name: 'Attempt Doom Tower', icon: IB(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'm3', name: 'Obtain Tier 1 Skill', icon: IB(icons.star, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'm4', name: 'Obtain Tier 1 Pet', icon: IB(icons.pet, '#f97316'), color: '#f97316', target: 5 },
+                    { id: 'm5', name: 'Obtain Rare+ Skill or Pet', icon: IB(icons.gem, '#ec4899'), color: '#ec4899', target: 5 },
+                    { id: 'm6', name: 'Use Scrolls (Current Tier)', icon: IB(icons.scroll, '#fbbf24'), color: '#fbbf24', target: 5 },
+                    { id: 'm7', name: 'Use Scrolls (Current Tier+)', icon: IB(icons.scroll, '#f59e0b'), color: '#f59e0b', target: 5 },
+                    { id: 'm8', name: 'Use Cores (Current Tier)', icon: IB(icons.gem, '#6366f1'), color: '#6366f1', target: 5 },
+                    { id: 'm9', name: 'Use Cores (Current Tier+)', icon: IB(icons.gem, '#7c3aed'), color: '#7c3aed', target: 5 },
+                    { id: 'm10', name: 'Gain Player XP', icon: IB(icons.star, '#fbbf24'), color: '#fbbf24', target: 5 },
+                    { id: 'm11', name: 'Deal Clan Boss Damage', icon: IB(icons.crown, '#dc2626'), color: '#dc2626', target: 5 },
+                    { id: 'm12', name: 'Complete Total Tasks', icon: IB(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
+                    { id: 'm13', name: 'Collect Login Day', icon: IB(icons.calendar, '#3b82f6'), color: '#3b82f6', target: 5 },
+                    { id: 'm14', name: 'Reach Talent Level', icon: IB(icons.sword, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'm15', name: 'Attempt Campaign Boss', icon: IB(icons.skull, '#ef4444'), color: '#ef4444', target: 5 }
+                ],
+                points: 0, chests: [false, false, false, false, false], taskProgress: {}, claimed: {}
+            }
+        };
+        const chestMilestones = [20, 40, 60, 80, 100];
+        const chestRewards = [
+            [{ icon: IB(icons.gem, '#fbbf24'), name: 'Gems', amount: 'x50' }],
+            [{ icon: IB(icons.gem, '#fbbf24'), name: 'Gems', amount: 'x100' }, { icon: IB(icons.scroll, '#a5f3fc'), name: 'Scroll', amount: 'x1' }],
+            [{ icon: IB(icons.gem, '#fbbf24'), name: 'Gems', amount: 'x150' }, { icon: IB(icons.energy, '#10b981'), name: 'Energy', amount: 'x50' }],
+            [{ icon: IB(icons.gem, '#fbbf24'), name: 'Gems', amount: 'x200' }, { icon: IB(icons.scroll, '#a5f3fc'), name: 'Scroll', amount: 'x2' }],
+            [{ icon: IB(icons.gem, '#fbbf24'), name: 'Gems', amount: 'x300' }, { icon: IB(icons.chest, '#d8b4fe'), name: 'Chest', amount: 'x1' }, { icon: IB(icons.energy, '#10b981'), name: 'Energy', amount: 'x100' }]
+        ];
+        let currentTab = 'session';
+        let tabFirstVisit = { daily: true, weekly: true, monthly: true };
+        let debugOpen = false;
+
+        // ========== SESSION TAB DATA ==========
+        const sessionMilestones = [
+            { id: 's1', minutes: 5, reward: { icon: IB(icons.gem, '#fbbf24'), name: 'Gold', amount: '30K' } },
+            { id: 's2', minutes: 10, reward: { icon: IB(icons.gem, '#a855f7'), name: 'Gems', amount: 'x75' } },
+            { id: 's3', minutes: 20, reward: { icon: IB(icons.energy, '#3b82f6'), name: 'Multi-Battle', amount: 'x45' } },
+            { id: 's4', minutes: 30, reward: { icon: IB(icons.star, '#ec4899'), name: 'Skill Tickets', amount: 'x37' } },
+            { id: 's5', minutes: 45, reward: { icon: IB(icons.pet, '#f97316'), name: 'Pet Tickets', amount: 'x37' } },
+            { id: 's6', minutes: 60, isChoice: true, reward: { icon: IB(icons.star, '#e879f9'), name: 'Choose Boost', amount: '' } },
+            { id: 's7', minutes: 75, reward: { icon: IB(icons.scroll, '#a5f3fc'), name: 'Scrolls', amount: 'x52' } },
+            { id: 's8', minutes: 90, reward: { icon: IB(icons.gem, '#a855f7'), name: 'Gems', amount: 'x75' } },
+            { id: 's9', minutes: 120, reward: { icon: IB(icons.chest, '#d8b4fe'), name: 'Scrolls', amount: 'x90' } }
+        ];
+
+        const boostEffects = [
+            { id: 'idle', name: 'Idle Bonus', desc: '+20% Idle Rewards for 2 hours', icon: '💤', duration: 7200 },
+            { id: 'upgrade', name: 'Upgrade Speed', desc: '+30% Upgrade Speed for 2 hours', icon: '⚡', duration: 7200 },
+            { id: 'energy', name: 'No Energy Loss', desc: 'No Energy on Loss for 2 hours', icon: '🛡️', duration: 7200 }
+        ];
+
+        let sessionState = {
+            playtimeMinutes: 0,
+            claimedMilestones: {},
+            activeEffects: [], // { effectId, expiresAt }
+            currentBoostIndex: 0,  // For cycling through boost effects in debug
+            playerLevel: 1  // Player character level - affects reward scaling
+        };
+
+        function initTaskProgress() {
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                questData[t].tasks.forEach(task => {
+                    questData[t].taskProgress[task.id] = 0;
+                    questData[t].claimed[task.id] = false;
+                });
+            });
+        }
+        function updateTimers() {
+            const now = new Date();
+            const dow = now.getDay();
+            const daysUntilMon = dow === 0 ? 1 : (8 - dow);
+            document.getElementById('weekly-timer').textContent = `${daysUntilMon} day${daysUntilMon > 1 ? 's' : ''} until reset`;
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            const daysUntilEnd = lastDay.getDate() - now.getDate();
+            document.getElementById('monthly-timer').textContent = `${daysUntilEnd} day${daysUntilEnd > 1 ? 's' : ''} until reset`;
+        }
+        function hasClaimable(tabName) {
+            const data = questData[tabName];
+            const hasReadyTask = data.tasks.some(t => data.taskProgress[t.id] >= t.target && !data.claimed[t.id]);
+            const hasReadyChest = chestMilestones.some((m, i) => data.points >= m && !data.chests[i]);
+            return hasReadyTask || hasReadyChest;
+        }
+        function updateRedDots() {
+            let anyClaimable = false;
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                const tab = document.querySelector(`.tab-btn[data-tab="${t}"]`);
+                const has = hasClaimable(t);
+                if (tab) {
+                    tab.classList.toggle('has-reward', has);
+                    const dot = tab.querySelector('.tab-red-dot');
+                    if (dot) dot.style.display = has ? 'block' : 'none';
+                }
+                if (has) anyClaimable = true;
+            });
+            const mainDot = document.getElementById('mainRedDot');
+            if (mainDot) mainDot.style.display = anyClaimable ? 'block' : 'none';
+        }
+        function renderChests(tabName) {
+            const container = document.getElementById(`${tabName}-chests`);
+            if (!container) return;
+            const data = questData[tabName];
+            container.innerHTML = chestMilestones.map((m, i) => {
+                let cls = 'locked', icon = chestRewards[i][0].icon, showDot = false;
+                if (data.chests[i]) { cls = 'claimed'; icon = IB(icons.check, '#10b981'); }
+                else if (data.points >= m) { cls = 'available'; showDot = true; }
+                return `<div class="chest-item" onclick="${data.chests[i] ? '' : (data.points >= m ? `claimChest('${tabName}',${i})` : `showLockText(event,${m})`)}">
+                    <div class="chest-icon ${cls}">${icon}${showDot ? '<span class="chest-red-dot"></span>' : ''}</div>
+                    <div class="chest-points">${m}</div></div>`;
+            }).join('');
+        }
+
+        function getTaskStatus(data, task) {
+            const prog = data.taskProgress[task.id] || 0;
+            const done = prog >= task.target;
+            const claimed = data.claimed[task.id];
+            if (claimed) return 'collected';
+            if (done) return 'ready';
+            if (prog > 0) return 'inprogress';
+            return 'notstarted';
+        }
+        function renderTasks(tabName) {
+            const container = document.getElementById(`${tabName}-tasks`);
+            const bannerEl = document.getElementById(`${tabName}-complete-banner`);
+            if (!container) return;
+            const data = questData[tabName];
+            const sorted = [...data.tasks].sort((a, b) => {
+                const order = { ready: 0, inprogress: 1, notstarted: 2, collected: 3 };
+                return order[getTaskStatus(data, a)] - order[getTaskStatus(data, b)];
+            });
+            const allClaimed = data.tasks.every(t => data.claimed[t.id]);
+            if (bannerEl) bannerEl.innerHTML = allClaimed ? '<div class="all-completed-banner">✨ Destiny Fulfilled!</div>' : '';
+            container.innerHTML = sorted.map(task => {
+                const prog = data.taskProgress[task.id] || 0;
+                const status = getTaskStatus(data, task);
+                const pct = Math.min((prog / task.target) * 100, 100);
+                let itemClass = '', btnClass = '', btnText = 'Go', btnAction = `showFloatingText(event)`;
+                if (status === 'collected') { itemClass = 'collected' + (allClaimed ? ' all-completed' : ''); btnClass = 'done'; btnText = 'Done'; btnAction = ''; }
+                else if (status === 'ready') { itemClass = 'ready-to-claim'; btnClass = 'claim'; btnText = 'Claim'; btnAction = `claimTask('${tabName}','${task.id}')`; }
+                else if (status === 'inprogress') { itemClass = 'in-progress'; }
+                return `<div class="task-item ${itemClass}">
+                    <div class="task-icon">${task.icon}</div>
+                    <div class="task-info"><div class="task-name">${task.name}</div>
+                    <div class="task-progress-container"><div class="task-progress-bar"><div class="task-progress-fill" style="width:${pct}%"></div></div>
+                    <span class="task-progress-text">${prog}/${task.target}</span></div></div>
+                    <div class="task-right"><div class="task-points">${IB(icons.star, '#fbbf24', 12)} 10</div>
+                    <button class="go-btn ${btnClass}" onclick="${btnAction}" ${status === 'collected' ? 'disabled' : ''}>${btnText}</button></div></div>`;
+            }).join('');
+        }
+        function updateProgressDisplay(tabName, animate = false) {
+            const data = questData[tabName];
+            const ptsEl = document.getElementById(`${tabName}-points`);
+            const fill = document.getElementById(`${tabName}-progress-fill`);
+            if (ptsEl) ptsEl.textContent = `${data.points}/100`;
+            if (fill) {
+                if (animate) {
+                    fill.classList.remove('animate');
+                    fill.style.width = '0%';
+                    requestAnimationFrame(() => {
+                        fill.classList.add('animate');
+                        fill.style.width = `${Math.min(data.points, 100)}%`;
+                    });
+                } else {
+                    fill.classList.add('animate');
+                    fill.style.width = `${Math.min(data.points, 100)}%`;
+                }
+            }
+            renderChests(tabName);
+            updateRedDots();
+            updateDebugInfo();
+        }
+        function showFloatingText(event) {
+            event.stopPropagation();
+            const t = document.createElement('div');
+            t.className = 'floating-text';
+            t.textContent = '👆 Destiny awaits...';
+            const r = event.target.getBoundingClientRect();
+            t.style.left = `${r.left + r.width / 2}px`;
+            t.style.top = `${r.top - 10}px`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
+        }
+        function showLockText(event, needed) {
+            event.stopPropagation();
+            const t = document.createElement('div');
+            t.className = 'floating-text';
+            t.textContent = `🔒 Earn ${needed} favour to unlock`;
+            const r = event.target.getBoundingClientRect();
+            t.style.left = `${r.left + r.width / 2}px`;
+            t.style.top = `${r.top - 10}px`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
+        }
+        function claimTask(tabName, taskId) {
+            const data = questData[tabName];
+            if (data.taskProgress[taskId] >= data.tasks.find(t => t.id === taskId).target && !data.claimed[taskId]) {
+                data.claimed[taskId] = true;
+                data.points = Math.min(120, data.points + 10);
+                renderTasks(tabName);
+                updateProgressDisplay(tabName);
+            }
+        }
+        function claimNextReadyTask() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            const task = data.tasks.find(t => data.taskProgress[t.id] >= t.target && !data.claimed[t.id]);
+            if (task) claimTask(currentTab, task.id);
+        }
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabName}`));
+            document.getElementById('questModal').classList.add('active');
+            document.getElementById('mainScreen').style.display = 'none';
+            // Scroll task list to top
+            const taskList = document.getElementById(`${tabName}-tasks`);
+            if (taskList) taskList.scrollTop = 0;
+
+            // Session specific focus
+            if (tabName === 'session') {
+                const milestones = document.getElementById('session-milestones');
+                if (milestones) {
+                    setTimeout(() => { milestones.scrollTop = milestones.scrollHeight; }, 10);
+                }
+            } else {
+                // Animate progress bar on tab entry
+                updateProgressDisplay(tabName, true);
+            }
+            updateDebugInfo();
+        }
+        function openQuestModal() {
+            document.getElementById('questModal').classList.add('active');
+            document.getElementById('mainScreen').style.display = 'none';
+            switchTab('session');
+        }
+        function closeQuestModal() {
+            document.getElementById('questModal').classList.remove('active');
+            document.getElementById('mainScreen').style.display = 'flex';
+        }
+        function showRewardPopup(rewards) {
+            const items = document.getElementById('rewardItems');
+            items.innerHTML = rewards.map(r => `<div class="reward-item"><div class="icon">${r.icon}</div><div class="amount">${r.name} ${r.amount}</div></div>`).join('');
+            document.getElementById('rewardPopup').classList.add('active');
+        }
+        function closeRewardPopup() { document.getElementById('rewardPopup').classList.remove('active'); }
+        function claimChest(tabName, index) {
+            const data = questData[tabName];
+            if (data.points >= chestMilestones[index] && !data.chests[index]) {
+                data.chests[index] = true;
+                renderChests(tabName);
+                updateRedDots();
+                updateDebugInfo();
+            }
+        }
+        function toggleDebugPanel() {
+            debugOpen = !debugOpen;
+            document.getElementById('debugPanel').classList.toggle('open', debugOpen);
+        }
+        function addPoints(amt) {
+            if (currentTab === 'session') return;
+            questData[currentTab].points = Math.max(0, Math.min(120, questData[currentTab].points + amt));
+            updateProgressDisplay(currentTab);
+        }
+        function setPoints(amt) {
+            if (currentTab === 'session') return;
+            questData[currentTab].points = Math.min(120, Math.max(0, amt));
+            updateProgressDisplay(currentTab);
+        }
+        function progressNextTask() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            const task = data.tasks.find(t => data.taskProgress[t.id] < t.target && !data.claimed[t.id]);
+            if (task) {
+                data.taskProgress[task.id] = Math.min(data.taskProgress[task.id] + 1, task.target);
+                renderTasks(currentTab);
+                updateRedDots();
+                updateDebugInfo();
+            }
+        }
+        function completeNextTask() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            const task = data.tasks.find(t => data.taskProgress[t.id] < t.target);
+            if (task) { data.taskProgress[task.id] = task.target; renderTasks(currentTab); updateRedDots(); updateDebugInfo(); }
+        }
+        function completeAllTasks() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            data.tasks.forEach(t => { data.taskProgress[t.id] = t.target; });
+            renderTasks(currentTab); updateRedDots(); updateDebugInfo();
+        }
+        function claimAvailableChests() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            let rewards = [];
+            chestMilestones.forEach((m, i) => {
+                if (data.points >= m && !data.chests[i]) {
+                    data.chests[i] = true;
+                    rewards = [...rewards, ...chestRewards[i]];
+                }
+            });
+            renderChests(currentTab); updateRedDots(); updateDebugInfo();
+            if (rewards.length > 0) showRewardPopup(rewards);
+        }
+        function claimAllChests() {
+            if (currentTab === 'session') return;
+            questData[currentTab].chests = [true, true, true, true, true];
+            renderChests(currentTab); updateRedDots(); updateDebugInfo();
+        }
+        function resetCurrentTab() {
+            if (currentTab === 'session') {
+                resetSession();
+                return;
+            }
+            const data = questData[currentTab];
+            data.points = 0; data.chests = [false, false, false, false, false];
+            data.tasks.forEach(t => { data.taskProgress[t.id] = 0; data.claimed[t.id] = false; });
+            tabFirstVisit[currentTab] = true;
+            renderTasks(currentTab); updateProgressDisplay(currentTab);
+        }
+        function resetAll() {
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                const data = questData[t];
+                data.points = 0; data.chests = [false, false, false, false, false];
+                data.tasks.forEach(tk => { data.taskProgress[tk.id] = 0; data.claimed[tk.id] = false; });
+                tabFirstVisit[t] = true;
+                renderTasks(t); updateProgressDisplay(t, false);
+            });
+            // Also reset session
+            resetSession();
+        }
+        function updateDebugInfo() {
+            document.getElementById('debug-current-tab').textContent = currentTab;
+            if (currentTab === 'session') {
+                document.getElementById('debug-current-points').textContent = `${sessionState.playtimeMinutes} min`;
+                document.getElementById('debug-chests-claimed').textContent = `Lv.${sessionState.playerLevel}`;
+                const claimedCount = Object.keys(sessionState.claimedMilestones).filter(k => sessionState.claimedMilestones[k]).length;
+                document.getElementById('debug-tasks-done').textContent = `${claimedCount}/${sessionMilestones.length}`;
+            } else {
+                const data = questData[currentTab];
+                document.getElementById('debug-current-points').textContent = data.points;
+                document.getElementById('debug-chests-claimed').textContent = `${data.chests.filter(c => c).length}/5`;
+                document.getElementById('debug-tasks-done').textContent = `${data.tasks.filter(t => data.claimed[t.id]).length}/${data.tasks.length}`;
+            }
+        }
+
+        // Inject Main Screen Icon
+        document.querySelector('.quest-icon-btn .icon').innerHTML = IB(icons.scroll, "currentColor", 42);
+
+        // ========== SESSION TAB FUNCTIONS ==========
+        function formatTime(mins) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return h > 0 ? `${h}h ${m}m` : `${m}m`;
+        }
+
+        function formatTimerCountdown(mins, currentMins) {
+            const remaining = mins - currentMins;
+            if (remaining <= 0) return '00:00';
+            const m = Math.floor(remaining);
+            const s = Math.round((remaining - m) * 60);
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function getNextMilestone() {
+            return sessionMilestones.find(m => sessionState.playtimeMinutes < m.minutes) || sessionMilestones[sessionMilestones.length - 1];
+        }
+
+        function renderSessionMilestones() {
+            const container = document.getElementById('session-milestones');
+            if (!container) return;
+
+            const maxMins = sessionMilestones[sessionMilestones.length - 1].minutes;
+            const progressPct = Math.min((sessionState.playtimeMinutes / maxMins) * 100, 100);
+            const fillEl = document.getElementById('session-progress-fill');
+            if (fillEl) fillEl.style.height = `${progressPct}%`;
+
+            // Update timer
+            const nextMs = getNextMilestone();
+            const timerEl = document.getElementById('session-next-timer');
+            if (timerEl) {
+                if (sessionState.playtimeMinutes >= maxMins) {
+                    timerEl.textContent = 'DONE!';
+                } else {
+                    timerEl.textContent = formatTimerCountdown(nextMs.minutes, sessionState.playtimeMinutes);
+                }
+            }
+
+            container.innerHTML = sessionMilestones.map(ms => {
+                const unlocked = sessionState.playtimeMinutes >= ms.minutes;
+                const claimed = sessionState.claimedMilestones[ms.id];
+                let stateClass = 'locked';
+                let btnClass = '';
+                let btnText = 'Locked';
+                let action = '';
+
+                if (claimed) {
+                    stateClass = 'claimed';
+                    btnClass = 'claimed';
+                    btnText = '✓';
+                } else if (unlocked) {
+                    stateClass = 'unlocked';
+                    if (ms.isChoice) {
+                        btnClass = 'choose';
+                        btnText = 'Choose';
+                        action = `showChoicePopup()`;
+                    } else {
+                        btnClass = 'claim';
+                        btnText = 'Claim';
+                        action = `claimSessionMilestone('${ms.id}')`;
+                    }
+                }
+
+                const choiceClass = ms.isChoice ? 'is-choice' : '';
+                const timeLabel = ms.minutes >= 60 ? `${Math.floor(ms.minutes / 60)}h ${ms.minutes % 60 > 0 ? ms.minutes % 60 + 'm' : ''}` : `${ms.minutes}m`;
+
+                // Scale reward amount by player level (each level adds 10%)
+                let scaledAmount = ms.reward.amount;
+                if (ms.reward.amount && !ms.isChoice) {
+                    const numMatch = ms.reward.amount.match(/(\d+)/);
+                    if (numMatch) {
+                        const baseNum = parseInt(numMatch[1]);
+                        const scaled = Math.floor(baseNum * (1 + (sessionState.playerLevel - 1) * 0.1));
+                        scaledAmount = ms.reward.amount.replace(/\d+/, scaled);
+                    }
+                }
+
+                return `<div class="session-milestone ${stateClass} ${choiceClass}">
+                    <div class="milestone-time">${timeLabel}</div>
+                    <div class="milestone-reward">
+                        <div class="milestone-reward-icon">${ms.reward.icon}</div>
+                        <span class="milestone-reward-text">${ms.reward.name} ${scaledAmount}</span>
+                    </div>
+                    <button class="milestone-btn ${btnClass}" onclick="${action}" ${!unlocked || claimed ? 'disabled' : ''}>${btnText}</button>
+                </div>`;
+            }).join('');
+        }
+
+
+        function renderSessionEffects() {
+            const container = document.getElementById('session-effects-list');
+            if (!container) return;
+
+            // Filter out expired effects
+            const now = Date.now();
+            sessionState.activeEffects = sessionState.activeEffects.filter(e => e.expiresAt > now);
+
+            if (sessionState.activeEffects.length === 0) {
+                container.innerHTML = '<div class="no-effects">No active boosts</div>';
+                return;
+            }
+
+            container.innerHTML = sessionState.activeEffects.map(effect => {
+                const boostDef = boostEffects.find(b => b.id === effect.effectId);
+                if (!boostDef) return '';
+                const remaining = Math.max(0, Math.floor((effect.expiresAt - now) / 1000));
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
+
+                return `<div class="session-effect">
+                    <div class="effect-icon">${boostDef.icon}</div>
+                    <div class="effect-info">
+                        <div class="effect-name">${boostDef.name}</div>
+                        <div class="effect-desc">${boostDef.desc}</div>
+                    </div>
+                    <div class="effect-timer">${timeStr}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function claimSessionMilestone(msId) {
+            const ms = sessionMilestones.find(m => m.id === msId);
+            if (!ms || sessionState.claimedMilestones[msId]) return;
+            if (sessionState.playtimeMinutes < ms.minutes) return;
+
+            sessionState.claimedMilestones[msId] = true;
+            renderSessionMilestones();
+            updateSessionRedDot();
+        }
+
+        function showChoicePopup() {
+            const container = document.getElementById('choiceOptions');
+
+            // Show ALL 3 boost options
+            container.innerHTML = boostEffects.map(boost => `
+                <div class="choice-option" onclick="selectBoost('${boost.id}')">
+                    <div class="choice-option-icon">${boost.icon}</div>
+                    <div class="choice-option-info">
+                        <div class="choice-option-name">${boost.name}</div>
+                        <div class="choice-option-desc">${boost.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('choicePopup').classList.add('active');
+        }
+
+
+        function selectBoost(effectId) {
+            const boost = boostEffects.find(b => b.id === effectId);
+            if (!boost) return;
+
+            // Mark 60-min milestone as claimed
+            const ms60 = sessionMilestones.find(m => m.isChoice);
+            if (ms60) sessionState.claimedMilestones[ms60.id] = true;
+
+            // Add effect
+            const expiresAt = Date.now() + (boost.duration * 1000);
+            // Remove existing same effect and add new
+            sessionState.activeEffects = sessionState.activeEffects.filter(e => e.effectId !== effectId);
+            sessionState.activeEffects.push({ effectId, expiresAt });
+
+            document.getElementById('choicePopup').classList.remove('active');
+            renderSessionMilestones();
+            renderSessionEffects();
+            updateSessionRedDot();
+        }
+
+        function addSessionTime(mins) {
+            sessionState.playtimeMinutes += mins;
+            renderSessionMilestones();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+        function setSessionTime(mins) {
+            sessionState.playtimeMinutes = mins;
+            renderSessionMilestones();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+        function changePlayerLevel(delta) {
+            sessionState.playerLevel = Math.max(1, Math.min(100, sessionState.playerLevel + delta));
+            renderSessionMilestones();
+            updateDebugInfo();
+        }
+
+        function resetSession() {
+            sessionState.playtimeMinutes = 0;
+            sessionState.claimedMilestones = {};
+            sessionState.activeEffects = [];
+            // Keep playerLevel as-is during reset
+            renderSessionMilestones();
+            renderSessionEffects();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+
+        function hasSessionClaimable() {
+            return sessionMilestones.some(ms =>
+                sessionState.playtimeMinutes >= ms.minutes && !sessionState.claimedMilestones[ms.id]
+            );
+        }
+
+        function updateSessionRedDot() {
+            const sessionTab = document.querySelector('.tab-btn[data-tab="session"]');
+            if (sessionTab) {
+                const redDot = sessionTab.querySelector('.tab-red-dot');
+                if (redDot) {
+                    redDot.style.display = hasSessionClaimable() ? 'block' : 'none';
+                }
+            }
+            // Update main button
+            const anyClaimable = hasSessionClaimable() || ['daily', 'weekly', 'monthly'].some(t => hasClaimable(t));
+            const mainDot = document.getElementById('mainRedDot');
+            if (mainDot) mainDot.style.display = anyClaimable ? 'block' : 'none';
+        }
+
+
+        // Update effects timer and session timer every second
+        setInterval(() => {
+            if (currentTab === 'session') {
+                renderSessionEffects();
+                updateSessionTimerDisplay();
+            }
+        }, 1000);
+
+        function updateSessionTimerDisplay() {
+            const timerEl = document.getElementById('session-next-timer');
+            const levelEl = document.getElementById('session-player-level');
+
+            if (levelEl) {
+                levelEl.textContent = sessionState.playerLevel;
+            }
+
+            if (timerEl) {
+                const maxMins = sessionMilestones[sessionMilestones.length - 1].minutes;
+                if (sessionState.playtimeMinutes >= maxMins) {
+                    timerEl.textContent = 'DONE!';
+                } else {
+                    const nextMs = getNextMilestone();
+                    const remaining = nextMs.minutes - sessionState.playtimeMinutes;
+                    const mins = Math.floor(remaining);
+                    const secs = Math.round((remaining - mins) * 60);
+                    timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        function init() {
+            initTaskProgress(); updateTimers();
+            ['daily', 'weekly', 'monthly'].forEach(t => { renderTasks(t); renderChests(t); });
+            renderSessionMilestones();
+            renderSessionEffects();
+            updateSessionTimerDisplay();
+            updateRedDots();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+
+        init();
+    </script>
+</body>
+
+</html>
