@@ -3,165 +3,928 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Session Rewards</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quest Prototype - Tactile Slate</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --bg-window: #F1F5F9;
+            /* ========== TACTILE SLATE PALETTE ========== */
+            /* Neutrals */
+            --void: #0F172A;
+            --void-deep: #020617;
+            --structure: #F1F5F9;
+            --surface: #FFFFFF;
+            --inlay: #F8FAFC;
+            --inlay-dark: #E2E8F0;
+
+            /* Text */
+            --text-primary: #1E293B;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+
+            /* Accents */
+            --accent-primary: #2B69E6;
+            --accent-primary-dark: #1E4BA8;
+            --accent-destructive: #F1365D;
+            --accent-destructive-dark: #9F1A3A;
+            --accent-positive: #10B981;
+            --accent-positive-dark: #047857;
+            --accent-warning: #FBBF24;
+            --accent-void: #7C3AED;
+
+            /* Legacy aliases for JS compatibility */
+            --accent-nature: #10B981;
+            --accent-evolution: #2B69E6;
+            --accent-legendary: #FBBF24;
+            --accent-danger: #F1365D;
+            --accent-gold: #FBBF24;
+            --accent-red: #F1365D;
+            --accent-secondary: #10B981;
+            --bg-primal: #0F172A;
+            --bg-panel: #F1F5F9;
             --bg-card: #FFFFFF;
-            --header-bg: #1E293B;
-
-            --accent-primary: #3B82F6;
-            --accent-glow: #60a5fa;
-            --accent-destructive: #F43F5E;
-            --accent-claimed: #F59E0B;
-
-            --text-main: #0F172A;
-            --text-secondary: #64748B;
-
+            --bg-overlay: rgba(15, 23, 42, 0.9);
+            --bg-dark: #0F172A;
+            --border-stone: #E2E8F0;
+            --border-gold: #FBBF24;
             --border-color: #E2E8F0;
-            --radius-card: 24px;
-            --radius-btn: 14px;
 
-            --font-main: 'Inter', sans-serif;
-            --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Typography */
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-header: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* Radii - Super Rounded */
+            --radius-window: 2.5rem;
+            --radius-card: 2rem;
+            --radius-button: 1rem;
+            --radius-input: 1rem;
+
+            /* Shadows - 3D Flat Style */
+            --shadow-btn: 0px 5px 0px 0px;
+            --shadow-deep: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
         }
 
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #94A3B8;
-            font-family: var(--font-main);
+            font-family: var(--font-body);
+            font-weight: 500;
+            background-color: var(--void);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+            overflow-x: auto;
+            color: var(--text-primary);
         }
 
-        .app-frame {
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: var(--void-deep);
+            border-radius: 48px;
+            overflow: hidden;
             position: relative;
+            box-shadow:
+                0 0 0 6px #1E293B,
+                0 0 0 8px var(--void),
+                0 25px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid #334155;
+            flex-shrink: 0;
+        }
+
+        .phone-content {
             width: 100%;
             height: 100%;
-            max-width: 440px;
-            max-height: 900px;
-            background: var(--bg-window);
-            display: flex;
-            flex-direction: column;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
         }
 
-        @media (min-width: 500px) {
-            .app-frame {
-                border-radius: 36px;
-                height: 92vh;
-                border: 6px solid #fff;
+        .main-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--structure);
+            gap: 40px;
+            position: relative;
+        }
+
+        .main-title {
+            font-family: var(--font-header);
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quest-icon-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-card);
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid var(--inlay-dark);
+            box-shadow: 0px 6px 0px 0px #CBD5E1;
+            transition: all 0.2s ease-out;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .quest-icon-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0px 4px 0px 0px #CBD5E1;
+            border-color: var(--accent-primary);
+        }
+
+        .quest-icon-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+            background: var(--inlay);
+        }
+
+        .quest-icon-btn .icon {
+            font-size: 42px;
+            transition: all 0.2s ease;
+            color: var(--accent-primary);
+        }
+
+        .quest-icon-btn .icon svg {
+            width: 42px;
+            height: 42px;
+            stroke: var(--accent-primary);
+            stroke-width: 2.5;
+        }
+
+        .quest-icon-btn .label {
+            font-family: var(--font-header);
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .red-dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-destructive);
+            border-radius: 50%;
+            top: 10px;
+            right: 10px;
+            border: 3px solid var(--surface);
+            animation: redDotPulse 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes redDotPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 0.9;
             }
         }
 
-        /* --- Header --- */
-        header {
-            background: var(--header-bg);
-            padding: 24px 28px 24px;
+        .quest-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--structure);
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .quest-modal.active {
+            display: flex;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background: #2F3846;
+            border-radius: var(--radius-window) var(--radius-window) 0 0;
+            flex-shrink: 0;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            color: white;
-            z-index: 10;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+            align-items: center;
+            position: relative;
+            z-index: 2;
         }
 
-        .header-content {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .dynamic-title {
-            font-weight: 800;
-            font-size: 1.5rem;
-            line-height: 1.1;
-            max-width: 260px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .next-timer {
-            font-size: 0.8rem;
-            color: #94A3B8;
-            font-weight: 600;
+        .modal-title {
+            font-family: var(--font-header);
+            font-size: 16px;
+            font-weight: 900;
+            color: #FFFFFF;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .btn-close {
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            border: none;
-            color: white;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-title svg {
+            width: 24px;
+            height: 24px;
+            stroke: #FFFFFF;
+            stroke-width: 2;
+        }
+
+        .exit-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-button);
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
         }
 
-        .btn-close:active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(0.9);
+        .exit-btn:hover {
+            background: var(--accent-destructive);
+            border-color: var(--accent-destructive);
         }
 
-        /* --- Layout --- */
-        .layout-grid {
+        .tab-bar {
+            display: flex;
+            padding: 16px 16px 0;
+            gap: 8px;
+            background: var(--structure);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-btn {
             flex: 1;
-            display: grid;
-            grid-template-columns: 48px 1fr;
-            gap: 12px;
-            padding: 0 20px;
-            overflow-y: auto;
-            overflow-x: visible;
-            scrollbar-width: none;
+            padding: 14px 8px;
+            background: var(--surface);
+            border: 2px solid var(--inlay-dark);
+            border-bottom: none;
+            color: var(--text-secondary);
+            font-family: var(--font-header);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            border-radius: var(--radius-button) var(--radius-button) 0 0;
+            text-transform: uppercase;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-primary);
+            background: var(--surface);
+            border-color: var(--accent-primary);
+            border-bottom: 2px solid var(--surface);
+            z-index: 2;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+            background: var(--inlay);
+        }
+
+        .tab-btn.has-reward {
+            border-color: var(--accent-warning);
+            color: var(--text-primary);
+        }
+
+        .tab-btn .tab-red-dot {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-destructive);
+            border-radius: 50%;
+            animation: redDotPulse 1.5s infinite;
+        }
+
+        .tab-btn .tab-indicator {
+            font-size: 10px;
+            margin-left: 4px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: var(--accent-warning);
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            background: var(--surface);
+            border: 2px solid var(--inlay-dark);
+            border-top: none;
+            margin: 0 16px 16px;
+            border-radius: 0 0 var(--radius-card) var(--radius-card);
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .progress-section {
+            padding: 20px;
+            background: var(--inlay);
+            margin: 16px;
+            border-radius: var(--radius-card);
+            border: 2px solid var(--inlay-dark);
             position: relative;
         }
 
-        .layout-grid::-webkit-scrollbar {
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .activity-label {
+            font-family: var(--font-header);
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        .activity-points {
+            font-family: var(--font-header);
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent-primary);
+            letter-spacing: 0.05em;
+        }
+
+        .timer-display {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .progress-track {
+            position: relative;
+            height: 16px;
+            background: var(--inlay-dark);
+            border-radius: 10px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            border: 2px solid #CBD5E1;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-positive);
+            border-radius: 8px;
+            transition: width 0.5s ease-out;
+            position: relative;
+        }
+
+        .progress-fill.animate {
+            transition: width 0.8s ease-out;
+        }
+
+        .chest-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4px;
+            position: relative;
+        }
+
+        .chest-row::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: var(--inlay-dark);
+            z-index: 0;
+            transform: translateY(-50%);
+            border-radius: 2px;
+        }
+
+        .chest-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chest-item:hover {
+            transform: scale(1.08) translateY(-2px);
+        }
+
+        .chest-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-button);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            transition: all 0.2s ease;
+            position: relative;
+            background: var(--surface);
+            border: 2px solid var(--inlay-dark);
+            box-shadow: 0px 4px 0px 0px #CBD5E1;
+        }
+
+        .chest-icon.locked {
+            opacity: 0.5;
+            filter: grayscale(0.6);
+        }
+
+        .chest-icon.available {
+            border-color: var(--accent-warning);
+            background: var(--surface);
+            box-shadow: 0px 4px 0px 0px #D97706;
+            animation: chestPulse 2s infinite;
+        }
+
+        @keyframes chestPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .chest-icon.claimed {
+            border-color: var(--accent-positive);
+            background: var(--inlay);
+            box-shadow: 0px 4px 0px 0px var(--accent-positive-dark);
+        }
+
+        .chest-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke-width: 2.5;
+        }
+
+        .chest-icon .chest-red-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-destructive);
+            border-radius: 50%;
+            border: 2px solid var(--surface);
+            animation: redDotPulse 2s infinite;
+        }
+
+        .chest-points {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-secondary);
+            font-family: var(--font-header);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-item {
+            background: var(--surface);
+            border-radius: var(--radius-button);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid var(--inlay-dark);
+            box-shadow: 0px 4px 0px 0px #CBD5E1;
+            transition: all 0.2s ease-out;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+        }
+
+        .task-item:hover {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px 0px #CBD5E1;
+        }
+
+        .task-item.collected {
+            opacity: 0.5;
+            order: 100;
+            filter: grayscale(0.6);
+            border-color: var(--inlay-dark);
+            background: var(--inlay);
+            box-shadow: none;
+        }
+
+        .task-item.ready-to-claim {
+            order: -2;
+            border-color: var(--accent-warning);
+            background: var(--surface);
+            box-shadow: 0px 4px 0px 0px #D97706;
+        }
+
+        .task-item.in-progress {
+            order: -1;
+        }
+
+        .task-item.all-completed {
+            border-color: var(--accent-positive);
+        }
+
+        .all-completed-banner {
+            background: var(--accent-positive);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 16px;
+            margin: 16px;
+            border-radius: var(--radius-button);
+            font-family: var(--font-header);
+            font-weight: 900;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0px 4px 0px 0px var(--accent-positive-dark);
+        }
+
+        .task-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-button);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            background: var(--inlay);
+            border: 2px solid var(--inlay-dark);
+            position: relative;
+        }
+
+        .task-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke-width: 2.5;
+        }
+
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-family: var(--font-body);
+        }
+
+        .task-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--inlay-dark);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #CBD5E1;
+        }
+
+        .task-progress-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .task-progress-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .task-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .task-points {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--accent-warning);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .go-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-button);
+            background: var(--surface);
+            border: 2px solid var(--inlay-dark);
+            color: var(--text-primary);
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0px 4px 0px 0px #CBD5E1;
+            font-family: var(--font-header);
+        }
+
+        .go-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px 0px #CBD5E1;
+        }
+
+        .go-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .go-btn.claim {
+            background: var(--accent-warning);
+            color: var(--text-primary);
+            border-color: #D97706;
+            box-shadow: 0px 4px 0px 0px #92400E;
+        }
+
+        .go-btn.claim:hover {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px 0px #92400E;
+        }
+
+        .go-btn.done {
+            background: var(--inlay);
+            border: 2px solid var(--inlay-dark);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .go-btn.done:hover {
+            transform: none;
+        }
+
+        .empty-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            gap: 16px;
+        }
+
+        .empty-tab .icon {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+
+        .empty-tab .text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ========== SESSION TAB STYLES - VERTICAL LIQUID TRACK ========== */
+
+        /* Session Playtime Display (matches activity-points style) */
+        .session-playtime {
+            background: var(--accent-primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: var(--radius-button);
+            font-size: 14px;
+            font-weight: 900;
+            font-family: var(--font-header);
+            box-shadow: 0px 3px 0px 0px var(--accent-primary-dark);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Session Rewards Container */
+        .session-rewards-container {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            background: var(--surface);
+        }
+
+        /* Layout Grid */
+        .session-layout-grid {
+            display: grid;
+            grid-template-columns: 32px 1fr;
+            gap: 12px;
+            padding: 12px 20px 100px 16px;
+            /* Reduced from 24px to 12px */
+            min-height: 100%;
+            position: relative;
+        }
+
+        #tab-session .progress-section {
+            padding: 32px 24px 16px;
+            /* Reduced bottom padding */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 130px;
+            /* Reduced from 160px */
+            background: linear-gradient(to bottom, #F8FAFC, #F1F5F9);
+            margin-bottom: 0;
+        }
+
+        #tab-session .progress-header {
+            justify-content: center;
+            margin-bottom: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #tab-session .activity-label {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.3em;
+            display: block;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--void) 0%, var(--accent-primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .session-dynamic-sentence {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.4;
+            margin-top: 4px;
+            display: block;
+            opacity: 0.9;
+        }
+
+        #tab-session .timer-display {
+            font-size: 15px;
+            color: var(--accent-primary);
+            margin-top: 12px;
+            font-weight: 700;
+            padding: 4px 16px;
+            background: rgba(43, 105, 230, 0.08);
+            border-radius: 20px;
+        }
+
+        /* Completion Screen */
+        .session-completion-screen {
+            position: absolute;
+            inset: 0;
+            background: var(--surface);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 40px;
+            text-align: center;
+            animation: session-fade-in 0.5s ease-out;
+        }
+
+        @keyframes session-fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .session-completion-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+        }
+
+        .session-completion-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--text-primary);
+            font-family: var(--font-header);
+            margin-bottom: 12px;
+        }
+
+        .session-completion-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .session-layout-grid::-webkit-scrollbar {
             display: none;
         }
 
-        /* --- Track --- */
-        .track-column {
+        /* Track Column */
+        .session-track-column {
             position: relative;
+            width: 32px;
             height: 100%;
         }
 
-        .liquid-track {
+        .session-liquid-track {
             position: absolute;
             top: 0;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 14px;
-            background: #E2E8F0;
+            background: var(--inlay-dark);
             border-radius: 100px;
             z-index: 0;
             mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
         }
 
-        .liquid-fill {
+        .session-liquid-fill {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -173,7 +936,7 @@
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }
 
-        .liquid-fill::after {
+        .session-liquid-fill::after {
             content: '';
             position: absolute;
             top: 0;
@@ -185,8 +948,8 @@
             box-shadow: 0 0 15px white, 0 0 30px var(--accent-primary);
         }
 
-        /* --- Cards List --- */
-        .cards-column {
+        /* Cards Column */
+        .session-cards-column {
             display: flex;
             flex-direction: column-reverse;
             padding-bottom: 24px;
@@ -194,7 +957,7 @@
             gap: 16px;
         }
 
-        .reward-row {
+        .session-reward-row {
             display: flex;
             align-items: center;
             position: relative;
@@ -202,105 +965,105 @@
         }
 
         /* Connector */
-        .connector {
+        .session-connector {
             position: absolute;
-            left: -40px;
+            left: -24px;
             top: 50%;
-            width: 30px;
+            width: 28px;
             height: 4px;
-            background: #CBD5E1;
+            background: var(--inlay-dark);
             transform-origin: left;
             transition: 0.4s;
             z-index: -1;
             border-radius: 4px;
         }
 
-        .reward-row.active .connector {
+        .session-reward-row.active .session-connector {
             background: var(--accent-primary);
             box-shadow: 0 0 12px var(--accent-primary);
             height: 6px;
         }
 
-        .reward-row.claimed .connector {
-            background: var(--accent-claimed);
+        .session-reward-row.claimed .session-connector {
+            background: var(--accent-warning);
             box-shadow: none;
             height: 4px;
         }
 
         /* Dot */
-        .dot {
+        .session-dot {
             position: absolute;
-            left: -46px;
+            left: -24px;
             top: 50%;
             transform: translateY(-50%);
             width: 16px;
             height: 16px;
-            background: #F1F5F9;
-            border: 4px solid #CBD5E1;
+            background: var(--surface);
+            border: 4px solid var(--inlay-dark);
             border-radius: 50%;
             z-index: 5;
-            transition: 0.4s var(--ease-elastic);
+            transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .reward-row.active .dot {
+        .session-reward-row.active .session-dot {
             border-color: var(--accent-primary);
             background: white;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2), 0 0 20px var(--accent-primary);
             transform: translateY(-50%) scale(1.4);
         }
 
-        .reward-row.claimed .dot {
-            background: var(--accent-claimed);
-            border-color: var(--accent-claimed);
+        .session-reward-row.claimed .session-dot {
+            background: var(--accent-warning);
+            border-color: var(--accent-warning);
             box-shadow: none;
             transform: translateY(-50%) scale(1);
         }
 
-        /* --- Cards --- */
-        .reward-card {
+        /* Reward Cards */
+        .session-reward-card {
             flex: 1;
-            background: var(--bg-card);
-            border: 2px solid white;
-            border-radius: var(--radius-card);
+            background: var(--surface);
+            border: 2px solid var(--inlay-dark);
+            border-radius: var(--radius-button);
             margin-left: 4px;
-            padding: 12px 18px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 4px 0px 0px #CBD5E1;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .reward-row.next-up .reward-card {
+        .session-reward-row.next-up .session-reward-card {
             border-color: rgba(59, 130, 246, 0.4);
-            animation: breathe-glow 3s infinite ease-in-out;
+            animation: session-breathe-glow 3s infinite ease-in-out;
         }
 
-        @keyframes breathe-glow {
+        @keyframes session-breathe-glow {
 
             0%,
             100% {
-                box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.1);
+                box-shadow: 0px 5px 0px 0px #CBD5E1;
                 transform: scale(1);
             }
 
             50% {
-                box-shadow: 0 12px 30px -5px rgba(59, 130, 246, 0.25);
+                box-shadow: 0px 8px 0px 0px #94A3B8, 0 12px 30px -5px rgba(59, 130, 246, 0.25);
                 transform: scale(1.02);
             }
         }
 
-        .reward-row.active .reward-card {
+        .session-reward-row.active .session-reward-card {
             border-color: var(--accent-primary);
-            background: #FFFFFF;
+            background: var(--structure);
             transform: scale(1.03) translateX(8px);
             box-shadow: 0 15px 40px -10px rgba(59, 130, 246, 0.3);
             z-index: 2;
         }
 
-        .reward-row.claimed .reward-card {
+        .session-reward-row.claimed .session-reward-card {
             background: #FFFBF0;
             border-color: #FCD34D;
             opacity: 0.9;
@@ -309,88 +1072,95 @@
             pointer-events: none;
         }
 
-        .icon-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 18px;
-            background: #F1F5F9;
+        .session-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--inlay);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
             transition: 0.4s;
-            border: 1px solid #E2E8F0;
+            border: 2px solid var(--inlay-dark);
         }
 
-        .reward-row.active .icon-box {
+        .session-icon-box svg {
+            width: 22px;
+            height: 22px;
+            stroke-width: 2.5;
+        }
+
+        .session-reward-row.active .session-icon-box {
             background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            color: var(--accent-primary);
             border-color: #BFDBFE;
             transform: rotate(-5deg) scale(1.1);
         }
 
-        .reward-row.claimed .icon-box {
+        .session-reward-row.claimed .session-icon-box {
             background: #FEF3C7;
-            color: #D97706;
             border-color: #FDE68A;
             transform: rotate(0);
         }
 
-        .card-content {
+        .session-card-content {
             flex: 1;
             display: flex;
             flex-direction: column;
         }
 
-        .card-time {
-            font-size: 0.7rem;
+        .session-card-time {
+            font-size: 0.65rem;
             font-weight: 800;
-            color: #94A3B8;
+            color: var(--text-muted);
             letter-spacing: 0.05em;
             margin-bottom: 2px;
+            text-transform: uppercase;
         }
 
-        .card-title {
-            font-size: 1.05rem;
+        .session-card-title {
+            font-size: 0.85rem;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--text-primary);
+            font-family: var(--font-header);
         }
 
-        /* --- Buttons --- */
-        .btn-area {
-            min-width: 110px;
+        /* Claim Button Area */
+        .session-btn-area {
+            min-width: 90px;
             display: flex;
             justify-content: flex-end;
             position: relative;
         }
 
-        .btn-claim {
+        .session-btn-claim {
             width: 100%;
-            padding: 12px 0;
-            border-radius: var(--radius-btn);
-            background: #F1F5F9;
-            border: 2px solid #E2E8F0;
-            color: #64748B;
+            padding: 10px 0;
+            border-radius: var(--radius-button);
+            background: var(--inlay);
+            border: 2px solid var(--inlay-dark);
+            color: var(--text-muted);
             font-weight: 800;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: not-allowed;
             transition: 0.3s;
             position: relative;
             overflow: hidden;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-family: var(--font-header);
         }
 
-        .reward-row.active .btn-claim.ready {
-            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        .session-reward-row.active .session-btn-claim.ready {
+            background: var(--accent-primary);
             border: none;
             color: white;
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            animation: pulse-btn 1.5s infinite;
-            font-size: 0.85rem;
+            animation: session-pulse-btn 1.5s infinite;
+            font-size: 0.75rem;
         }
 
-        .reward-row.active .btn-claim.ready::after {
+        .session-reward-row.active .session-btn-claim.ready::after {
             content: '';
             position: absolute;
             top: 0;
@@ -398,10 +1168,10 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shine 2.5s infinite;
+            animation: session-shine 2.5s infinite;
         }
 
-        @keyframes pulse-btn {
+        @keyframes session-pulse-btn {
             0% {
                 transform: scale(1);
             }
@@ -416,7 +1186,7 @@
             }
         }
 
-        @keyframes shine {
+        @keyframes session-shine {
             10% {
                 left: 100%;
             }
@@ -426,12 +1196,12 @@
             }
         }
 
-        .reward-row.active .btn-claim.ready:active {
+        .session-reward-row.active .session-btn-claim.ready:active {
             transform: scale(0.92);
             animation: none;
         }
 
-        .stamp-wrap {
+        .session-stamp-wrap {
             position: absolute;
             right: 0;
             top: 50%;
@@ -441,36 +1211,36 @@
             text-align: center;
         }
 
-        .stamp-icon {
+        .session-stamp-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
-            color: var(--accent-claimed);
+            color: var(--accent-warning);
             font-weight: 900;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            text-shadow: 0 2px 0px rgba(255, 255, 255, 1);
-            animation: stamp-drop 0.4s var(--ease-elastic) forwards;
+            animation: session-stamp-drop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
-        .crown-svg {
-            width: 24px;
-            height: 24px;
+        .session-stamp-icon svg {
+            width: 20px;
+            height: 20px;
             fill: currentColor;
+            stroke: none;
         }
 
-        .reward-row.claimed .btn-claim {
+        .session-reward-row.claimed .session-btn-claim {
             opacity: 0;
             pointer-events: none;
         }
 
-        .reward-row.claimed .stamp-wrap {
+        .session-reward-row.claimed .session-stamp-wrap {
             display: block;
         }
 
-        @keyframes stamp-drop {
+        @keyframes session-stamp-drop {
             0% {
                 transform: scale(2);
                 opacity: 0;
@@ -484,32 +1254,33 @@
             }
         }
 
-        /* --- Footer --- */
-        .footer-info {
-            background: white;
-            padding: 24px;
-            border-top: 1px solid var(--border-color);
+        /* Session Footer */
+        .session-footer {
+            background: var(--structure);
+            padding: 20px 24px;
+            border-top: 2px solid var(--inlay-dark);
             text-align: center;
             z-index: 20;
         }
 
-        .footer-primary {
+        .session-footer-primary {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            font-family: var(--font-header);
+        }
+
+        .session-footer-secondary {
+            font-size: 0.7rem;
+            color: var(--text-muted);
             font-weight: 700;
-            color: var(--text-main);
-            font-size: 0.95rem;
-            margin-bottom: 6px;
-        }
-
-        .footer-secondary {
-            font-size: 0.75rem;
-            color: #94A3B8;
-            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }
 
-        /* FX Layer */
-        #fx-layer {
+        /* Session FX Layer for particles */
+        #session-fx-layer {
             position: absolute;
             inset: 0;
             pointer-events: none;
@@ -517,454 +1288,1802 @@
             overflow: hidden;
         }
 
-        .particle {
+        .session-particle {
             position: absolute;
             border-radius: 50%;
             pointer-events: none;
             will-change: transform;
         }
 
-
-        /* --- POPUP MODAL --- */
-        .modal-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 200;
-            display: flex;
-            align-items: center;
+        .reward-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
             justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
         }
 
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
+        .reward-popup-overlay.active {
+            display: flex;
         }
 
-        .modal-card {
-            width: 85%;
-            max-width: 320px;
-            background: white;
-            border-radius: 32px;
+        /* Choice Picker Popup */
+        .choice-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+
+        .choice-popup-overlay.active {
+            display: flex;
+        }
+
+        .choice-popup {
+            background: var(--structure);
+            border-radius: var(--radius-card);
             padding: 32px 24px;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: scale(0.8) translateY(20px);
-            transition: 0.4s var(--ease-elastic);
-            opacity: 0;
+            width: 340px;
+            border: 6px solid #2F3846;
+            animation: popupEntry 0.2s ease-out;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
         }
 
-        .modal-overlay.open .modal-card {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-
-        .modal-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
-            animation: bounce-in 0.6s 0.2s var(--ease-elastic) backwards;
-        }
-
-        .modal-title {
-            font-size: 1.4rem;
+        .choice-popup h3 {
+            color: var(--accent-void);
+            font-family: var(--font-header);
+            font-size: 18px;
             font-weight: 900;
-            color: var(--text-main);
             margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
         }
 
-        .modal-desc {
-            font-size: 0.9rem;
+        .choice-popup p {
             color: var(--text-secondary);
-            line-height: 1.5;
+            font-size: 13px;
             margin-bottom: 24px;
+            font-family: var(--font-body);
             font-weight: 500;
         }
 
-        .modal-actions {
+        .choice-options {
             display: flex;
+            flex-direction: column;
             gap: 12px;
         }
 
-        .btn-modal {
-            flex: 1;
-            padding: 14px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            border: none;
+        .choice-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--surface);
+            border: 2px solid var(--inlay-dark);
+            border-radius: var(--radius-button);
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
+            position: relative;
+            box-shadow: 0px 4px 0px 0px #CBD5E1;
         }
 
-        .btn-modal-secondary {
-            background: #F1F5F9;
-            color: var(--text-secondary);
+        .choice-option:hover {
+            border-color: var(--accent-void);
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px 0px #CBD5E1;
         }
 
-        .btn-modal-secondary:active {
-            transform: scale(0.95);
-            background: #E2E8F0;
+        .choice-option:active {
+            transform: translateY(4px);
+            box-shadow: none;
         }
 
-        .btn-modal-primary {
-            background: var(--accent-primary);
+        .choice-option-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-button);
+            background: var(--accent-void);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
             color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0px 3px 0px 0px #4C1D95;
         }
 
-        .btn-modal-primary:active {
-            transform: scale(0.95);
-            background: #2563EB;
+        .choice-option-info {
+            flex: 1;
+            text-align: left;
         }
 
-        @keyframes bounce-in {
-            0% {
-                transform: scale(0);
+        .choice-option-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: var(--font-header);
+            margin-bottom: 2px;
+        }
+
+        .choice-option-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .reward-popup {
+            background: var(--structure);
+            border-radius: var(--radius-card);
+            padding: 32px 24px;
+            text-align: center;
+            width: 320px;
+            position: relative;
+            border: 6px solid #2F3846;
+            animation: popupEntry 0.2s ease-out;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes popupEntry {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
             }
 
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
+            to {
+                opacity: 1;
                 transform: scale(1);
             }
         }
 
-        /* --- TOAST --- */
-        .toast {
+        .reward-close-btn {
             position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 3px solid var(--inlay-dark);
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            box-shadow: 0px 3px 0px 0px #CBD5E1;
+        }
+
+        .reward-close-btn:hover {
+            background: var(--accent-destructive);
+            border-color: var(--accent-destructive);
+            color: white;
+            transform: translateY(2px);
+            box-shadow: 0px 1px 0px 0px #9F1A3A;
+        }
+
+        .reward-icon-display {
+            font-size: 64px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .reward-icon-display svg {
+            width: 64px;
+            height: 64px;
+            stroke-width: 2;
+        }
+
+        .reward-popup h3 {
+            color: var(--accent-warning);
+            font-family: var(--font-header);
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .reward-details {
+            margin-bottom: 24px;
+        }
+
+        .reward-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-family: var(--font-body);
+        }
+
+        .reward-amount {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent-primary);
+            font-family: var(--font-header);
+        }
+
+        .reward-usage-box {
+            margin: 24px 8px 16px;
+            padding: 20px;
+            background: #F8FAFC;
+            border-radius: 20px;
+            border: 2px solid #E2E8F0;
+            text-align: left;
+        }
+
+        .reward-usage-label {
+            font-size: 12px;
+            font-weight: 900;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 12px;
+        }
+
+        .reward-usage-desc {
+            font-size: 15px;
+            color: #1E293B;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .reward-popup-footer {
+            margin-top: 24px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .collect-btn {
+            width: 100%;
+            max-width: 280px;
+            padding: 16px;
+            border-radius: 20px;
+            background: #fbbd23;
+            border: 3px solid #d97706;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            box-shadow: 0px 6px 0px 0px #92400E;
+            font-family: var(--font-header);
+        }
+
+        .collect-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0px 4px 0px 0px #92400E;
+        }
+
+        .collect-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+
+        .reward-go-btn {
+            margin-top: 12px;
+            padding: 12px 64px;
+            border-radius: 16px;
+            background: #2b69e6;
+            border: none;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0px 5px 0px 0px #1e4bb3;
+            font-family: var(--font-header);
+            display: none;
+            /* Controlled by JS */
+        }
+
+        .reward-go-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0px 4px 0px 0px #1e4bb3;
+        }
+
+        .reward-go-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+
+        /* Reward Items Grid for Chest Popup */
+        .reward-items {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .reward-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px;
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            border: 3px solid var(--inlay-dark);
+            box-shadow: 0px 6px 0px 0px #CBD5E1;
+            min-width: 80px;
+            transition: transform 0.2s ease;
+        }
+
+        .reward-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .reward-item .icon {
+            width: 56px;
+            height: 56px;
+            background: var(--inlay);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid var(--inlay-dark);
+        }
+
+        .reward-item .icon svg {
+            width: 32px;
+            height: 32px;
+            stroke-width: 2.5;
+        }
+
+        .reward-item .amount {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.3;
+            font-family: var(--font-header);
+        }
+
+        .reward-popup .close-btn {
+            padding: 16px 56px;
+            border-radius: var(--radius-button);
+            background: var(--accent-warning);
+            border: 3px solid #D97706;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            box-shadow: 0px 6px 0px 0px #92400E;
+            font-family: var(--font-header);
+        }
+
+        .reward-popup .close-btn:hover {
+            transform: translateY(3px);
+            box-shadow: 0px 3px 0px 0px #92400E;
+        }
+
+        .reward-popup .close-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+
+        /* Toast Notification */
+        .app-toast {
+            position: fixed;
             top: 100px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            background: #1E293B;
+            background: var(--void);
             color: white;
             padding: 12px 24px;
             border-radius: 100px;
             font-size: 0.85rem;
-            font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            font-family: var(--font-header);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 300;
+            z-index: 4000;
             opacity: 0;
             pointer-events: none;
-            transition: 0.4s var(--ease-elastic);
+            transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .toast.show {
+        .app-toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
 
-        .toast-icon {
-            color: var(--accent-success);
+        .app-toast-icon {
+            color: var(--accent-positive);
             font-size: 1.1rem;
+        }
+
+        /* Debug Panel - Collapsible */
+        .debug-toggle {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: #1a1a2e;
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .debug-toggle:hover {
+            background: var(--accent-primary);
+        }
+
+        .debug-panel {
+            position: fixed;
+            left: -320px;
+            top: 20px;
+            width: 300px;
+            background: #0d0d1a;
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid #333;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 99;
+        }
+
+        .debug-panel.open {
+            left: 20px;
+        }
+
+        .debug-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .debug-section {
+            margin-bottom: 16px;
+        }
+
+        .debug-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .debug-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .debug-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-primary);
+        }
+
+        .debug-btn.danger {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .debug-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .debug-btn.success {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .debug-btn.success:hover {
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        .debug-btn-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .debug-btn-row .debug-btn {
+            flex: 1;
+            text-align: center;
+        }
+
+        .debug-info {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        .debug-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .debug-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .debug-info-label {
+            color: var(--text-muted);
+        }
+
+        .debug-info-value {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .tab-quick-btns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .tab-quick-btns .debug-btn {
+            text-align: center;
+            padding: 6px;
+            font-size: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        .rotate-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            color: var(--text-primary);
+        }
+
+        .rotate-message .icon {
+            font-size: 64px;
+            animation: rotate 2s infinite;
+        }
+
+        @keyframes rotate {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-20deg);
+            }
+
+            75% {
+                transform: rotate(20deg);
+            }
+        }
+
+        @media (max-width: 500px) and (orientation: landscape) {
+            .rotate-message {
+                display: flex;
+            }
+
+            body>*:not(.rotate-message) {
+                display: none !important;
+            }
+        }
+
+        /* Note: popupEntry is already defined above at line 1579 */
+        /* borderRotate and rotateLight consolidated into rotate360 */
+        @keyframes rotate360 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -60px);
+            }
+        }
+
+        .floating-text {
+            position: fixed;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            background: var(--bg-overlay);
+            border: 1px solid var(--border-stone);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 9999;
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+            box-shadow: var(--shadow-deep);
         }
     </style>
 </head>
 
 <body>
+    <div class="rotate-message">
+        <div class="icon">📱</div>
+        <div>Please rotate your device to portrait mode</div>
+    </div>
 
-    <div class="app-frame">
-        <header>
-            <div class="header-content">
-                <div class="dynamic-title" id="header-title">Loading...</div>
-                <div class="next-timer" id="header-timer">CALCULATING...</div>
+    <!-- Debug Toggle Button -->
+    <button class="debug-toggle" onclick="toggleDebugPanel()">🛠️</button>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+        <div class="debug-title">🛠️ Debug Panel</div>
+        <div class="debug-section">
+            <div class="debug-section-title">Tab Navigation</div>
+            <div class="tab-quick-btns">
+                <button class="debug-btn" onclick="switchTab('session')">Session</button>
+                <button class="debug-btn" onclick="switchTab('daily')">Daily</button>
+                <button class="debug-btn" onclick="switchTab('weekly')">Weekly</button>
+                <button class="debug-btn" onclick="switchTab('monthly')">Monthly</button>
             </div>
-            <button class="btn-close">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                    stroke-linecap="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </header>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">Progress Controls</div>
+            <div class="debug-btn-row">
+                <button class="debug-btn success" onclick="addPoints(10)">+10</button>
+                <button class="debug-btn success" onclick="addPoints(20)">+20</button>
+            </div>
+            <div class="debug-btn-row">
+                <button class="debug-btn danger" onclick="addPoints(-10)">-10</button>
+                <button class="debug-btn danger" onclick="addPoints(-20)">-20</button>
+            </div>
+            <button class="debug-btn" onclick="setPoints(100)">Set to 100 pts</button>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">Task Controls</div>
+            <button class="debug-btn" onclick="progressNextTask()">Progress Next Task</button>
+            <button class="debug-btn success" onclick="completeNextTask()">Complete Next Task</button>
+            <button class="debug-btn success" onclick="completeAllTasks()">Complete All Tasks</button>
+            <button class="debug-btn" onclick="claimNextReadyTask()">Claim Next Ready</button>
+        </div>
+        <div class="debug-section" id="session-debug-section">
+            <div class="debug-section-title">Session Time</div>
+            <div class="debug-btn-row">
+                <button class="debug-btn success" onclick="addSessionTime(5)">+5</button>
+                <button class="debug-btn success" onclick="addSessionTime(15)">+15</button>
+                <button class="debug-btn success" onclick="addSessionTime(20)">+20</button>
+                <button class="debug-btn success" onclick="addSessionTime(30)">+30</button>
+            </div>
+            <button class="debug-btn danger" onclick="resetSession()">Reset Session</button>
+        </div>
 
-        <div class="layout-grid">
-            <div class="track-column">
-                <div class="liquid-track" id="liquid-track">
-                    <div class="liquid-fill" id="liquid-bar"></div>
+
+        <div class="debug-section">
+            <div class="debug-section-title">Chest Controls</div>
+            <button class="debug-btn" onclick="claimAvailableChests()">Claim Available</button>
+            <button class="debug-btn" onclick="claimAllChests()">Claim All</button>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">Reset</div>
+            <button class="debug-btn danger" onclick="resetCurrentTab()">Reset Tab</button>
+            <button class="debug-btn danger" onclick="resetAll()">Reset All</button>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">State</div>
+            <div class="debug-info">
+                <div class="debug-info-row"><span class="debug-info-label">Tab:</span><span class="debug-info-value"
+                        id="debug-current-tab">session</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Points:</span><span class="debug-info-value"
+                        id="debug-current-points">0</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Chests:</span><span class="debug-info-value"
+                        id="debug-chests-claimed">0/5</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Tasks:</span><span class="debug-info-value"
+                        id="debug-tasks-done">0/0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phone Frame -->
+    <div class="phone-frame">
+        <div class="phone-content">
+            <div class="main-screen" id="mainScreen">
+                <div class="main-title">Main Screen</div>
+                <button class="quest-icon-btn" onclick="openQuestModal()">
+                    <span class="icon">📜</span>
+                    <span class="label">Quests</span>
+                    <span class="red-dot" id="mainRedDot" style="display:none;"></span>
+                </button>
+            </div>
+            <div class="quest-modal" id="questModal">
+                <div class="modal-header">
+                    <div class="modal-title">📜 Quests</div>
+                    <button class="exit-btn" onclick="closeQuestModal()">✕</button>
+                </div>
+                <div class="tab-bar">
+                    <button class="tab-btn active" data-tab="session" onclick="switchTab('session')">Session<span
+                            class="tab-red-dot" style="display:none;"></span></button>
+
+                    <button class="tab-btn" data-tab="daily" onclick="switchTab('daily')">Daily<span class="tab-red-dot"
+                            style="display:none;"></span></button>
+                    <button class="tab-btn" data-tab="weekly" onclick="switchTab('weekly')">Weekly<span
+                            class="tab-red-dot" style="display:none;"></span></button>
+                    <button class="tab-btn" data-tab="monthly" onclick="switchTab('monthly')">Monthly<span
+                            class="tab-red-dot" style="display:none;"></span></button>
+                </div>
+                <div class="tab-content active" id="tab-session">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="activity-label">Session Rewards</span>
+                            <div class="session-dynamic-sentence" id="session-dynamic-sentence">Loading rewards...</div>
+                            <div class="timer-display" id="session-next-timer">Next reward in --:--</div>
+                        </div>
+                    </div>
+
+                    <div class="session-rewards-container">
+                        <div class="session-layout-grid" id="session-grid">
+                            <div class="session-track-column">
+                                <div class="session-liquid-track" id="session-liquid-track">
+                                    <div class="session-liquid-fill" id="session-liquid-fill"></div>
+                                </div>
+                            </div>
+                            <div class="session-cards-column" id="session-cards-container"></div>
+                            <div id="session-fx-layer"></div>
+                        </div>
+
+                        <div class="session-completion-screen" id="session-completion-screen">
+                            <div class="session-completion-icon">🏆</div>
+                            <div class="session-completion-title">You emptied the shelf!</div>
+                            <div class="session-completion-desc">All rewards claimed for today. Great job!</div>
+                        </div>
+                    </div>
+
+                    <div class="session-footer">
+                        <div class="session-footer-secondary" id="session-footer-timer">Global reset — 00:00 UTC</div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-daily">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div><span class="activity-label">Daily Activity</span>
+                                <div class="timer-display">Resets at 00:00</div>
+                            </div>
+                            <div class="activity-points" id="daily-points">0/60</div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="daily-progress-fill"></div>
+                        </div>
+                        <div class="chest-row" id="daily-chests"></div>
+                    </div>
+                    <div id="daily-complete-banner"></div>
+                    <div class="task-list" id="daily-tasks"></div>
+                </div>
+                <div class="tab-content" id="tab-weekly">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div><span class="activity-label">Weekly Activity</span>
+                                <div class="timer-display" id="weekly-timer"></div>
+                            </div>
+                            <div class="activity-points" id="weekly-points">0/60</div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="weekly-progress-fill"></div>
+                        </div>
+                        <div class="chest-row" id="weekly-chests"></div>
+                    </div>
+                    <div id="weekly-complete-banner"></div>
+                    <div class="task-list" id="weekly-tasks"></div>
+                </div>
+                <div class="tab-content" id="tab-monthly">
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div><span class="activity-label">Monthly Activity</span>
+                                <div class="timer-display" id="monthly-timer"></div>
+                            </div>
+                            <div class="activity-points" id="monthly-points">0/60</div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="monthly-progress-fill"></div>
+                        </div>
+                        <div class="chest-row" id="monthly-chests"></div>
+                    </div>
+                    <div id="monthly-complete-banner"></div>
+                    <div class="task-list" id="monthly-tasks"></div>
                 </div>
             </div>
-            <div class="cards-column" id="cards-container"></div>
         </div>
+    </div>
 
-        <div class="footer-info">
-            <div class="footer-primary" id="footer-timer">--:--:--</div>
-            <div class="footer-secondary">Global reset — 00:00 UTC</div>
-        </div>
+    <!-- Reward Popup -->
+    <div class="reward-popup-overlay" id="rewardPopup">
+        <div class="reward-popup">
+            <h3 id="reward-popup-title" style="color: #FBBF24; font-size: 22px;">REWARD CLAIMED!</h3>
+            <div class="reward-items" id="rewardItems"></div>
 
-        <div id="fx-layer"></div>
-
-        <!-- POPUP -->
-        <div class="modal-overlay" id="modal-overlay">
-            <div class="modal-card">
-                <div class="modal-icon" id="modal-icon">🎁</div>
-                <div class="modal-title" id="modal-title">Reward Claimed!</div>
-                <div class="modal-desc" id="modal-desc">This item has been added to your inventory.</div>
-                <div class="modal-actions">
-                    <button class="btn-modal btn-modal-secondary" onclick="closePopup()">Close</button>
-                    <button class="btn-modal btn-modal-primary" onclick="navFromPopup()">GO</button>
+            <!-- Section for "Where to Use" + "Go" Button -->
+            <div id="reward-usage-hint"
+                style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                <div class="reward-usage-box">
+                    <div class="reward-usage-label">WHERE TO USE</div>
+                    <div class="reward-usage-desc" id="reward-usage-desc"></div>
                 </div>
+                <button class="reward-go-btn" id="reward-go-btn" onclick="handleRewardGo()">GO</button>
+            </div>
+
+            <div class="reward-popup-footer">
+                <button class="collect-btn" onclick="closeRewardPopup()">COLLECT</button>
             </div>
         </div>
+    </div>
 
-        <!-- TOAST -->
-        <div class="toast" id="toast">
-            <span class="toast-icon">✓</span>
-            <span id="toast-msg">Success</span>
+    <!-- Choice Picker Popup -->
+    <div class="choice-popup-overlay" id="choicePopup">
+        <div class="choice-popup">
+            <h3>✨ Choose Your Boost</h3>
+            <p>60 minutes of playtime achieved! Select a temporary boost:</p>
+            <div class="choice-options" id="choiceOptions"></div>
         </div>
+    </div>
 
+    <!-- Toast Notification -->
+    <div class="app-toast" id="app-toast">
+        <span class="app-toast-icon">✓</span>
+        <span id="app-toast-msg">Success</span>
     </div>
 
     <script>
-        const REWARDS = [
-            { id: 1, time: 5, title: "Novice Pack", icon: "🎒", usage: "Check your Inventory to open this pack." },
-            { id: 2, time: 15, title: "Cobalt Shield", icon: "🛡️", usage: "Equip this in the Armory to boost defense." },
-            { id: 3, time: 30, title: "Speed Boost", icon: "⚡", usage: "Activate in Battle Prep for +10% Speed." },
-            { id: 4, time: 60, title: "Master Key", icon: "🔑", usage: "Use in the Dungeon to unlock Chests." },
-            { id: 5, time: 90, title: "Crimson Gem", icon: "💎", usage: "Trade this in the Marketplace for Gold." },
-            { id: 6, time: 120, title: "Royal Chest", icon: "👑", usage: "Open in the Great Hall for a legendary Item." }
+        // Helper to generate consistent SVG icons
+        function createIcon(path, color = "currentColor", size = 24) {
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-icon">${path}</svg>`;
+        }
+
+        const icons = {
+            chest: '<path d="M21 8a2 2 0 0 1-1.95 1.57L13 10V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6zm-9.39-4C10.74 3.46 9.4 3 8 3a7 7 0 0 0-7 7v9a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2v-4a7 7 0 0 0-1.39-4.01M13 14h-2m2 4h-2"/>',
+            scroll: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>',
+            sword: '<polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/>',
+            shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+            gem: '<path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/>',
+            skull: '<path d="M22 10.3c0-3.6-3.8-6.3-8-6.3h-4C5.8 4 2 6.7 2 10.3c0 .8.2 1.6.5 2.3l.3.8c.2.6.5 1.2.6 1.8.8 2.6 3.6 4.8 6.6 4.8h4c3 0 5.8-2.2 6.6-4.8.1-.6.4-1.2.6-1.8l.3-.8c.3-.7.5-1.5.5-2.3z"/><circle cx="9.5" cy="10.5" r="1.5"/><circle cx="14.5" cy="10.5" r="1.5"/><path d="M12 15h.01"/>',
+            calendar: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+            energy: '<polyline points="13 2 9 8 13 14 7 24"/><path d="M13 14h6L13 2v6h-6"/>',
+            potion: '<path d="M19 22H5l3-9V9a4 4 0 0 1 8 0v4l3 9z"/><path d="M9 2v4"/><path d="M15 2v4"/><path d="M12 2v6"/>',
+            book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+            castle: '<path d="M19 21v-8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8"/><path d="M12 11V7a2 2 0 0 1 2-2h1"/><path d="M9 7h1"/><path d="M5 21h14"/><path d="M5 21V7a2 2 0 0 1 2-2h1m8 16V7a2 2 0 0 0-2-2h-1"/>',
+            star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+            pet: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+            hammer: '<path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 6.35A3.01 3.01 0 0 0 15 11l-1 1 1 1 5.35-5.35a3.01 3.01 0 0 0-2.71-1.3z"/><path d="M12 9l-3-3a3 3 0 0 0-4.24 4.24l3 3"/>',
+            crown: '<path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>',
+            check: '<polyline points="20 6 9 17 4 12"/>',
+            gift: '<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>'
+        };
+
+        const questData = {
+            daily: {
+                tasks: [
+                    { id: 'd1', name: 'Collect AFK Chest', icon: createIcon(icons.chest, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'd2', name: 'Claim Daily Login', icon: createIcon(icons.calendar, '#3b82f6'), color: '#3b82f6', target: 5 },
+                    { id: 'd3', name: 'Claim Free Shop Pack', icon: createIcon(icons.gift, '#f59e0b'), color: '#f59e0b', target: 5 },
+                    { id: 'd4', name: 'Play Frozen Maw', icon: createIcon(icons.sword, '#06b6d4'), color: '#06b6d4', target: 5 },
+                    { id: 'd5', name: 'Play Cursed Heartwood', icon: createIcon(icons.shield, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'd6', name: 'Play Hall of Tomes', icon: createIcon(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'd7', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'd8', name: 'Fight Clan Boss', icon: createIcon(icons.crown, '#dc2626'), color: '#dc2626', target: 5 }
+                ],
+                points: 0, chests: [false, false, false], taskProgress: {}, claimed: {}
+            },
+            weekly: {
+                tasks: [
+                    { id: 'w1', name: 'Complete Daily Quests', icon: createIcon(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
+                    { id: 'w2', name: 'Play Frozen Maw', icon: createIcon(icons.sword, '#06b6d4'), color: '#06b6d4', target: 5 },
+                    { id: 'w3', name: 'Play Cursed Heartwood', icon: createIcon(icons.shield, '#10b981'), color: '#10b981', target: 5 },
+                    { id: 'w4', name: 'Play Hall of Tomes', icon: createIcon(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'w5', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'w6', name: 'Deal Clan Boss Damage', icon: createIcon(icons.crown, '#dc2626'), color: '#dc2626', target: 5 },
+                    { id: 'w7', name: 'Reach New Dungeon Level', icon: createIcon(icons.castle, '#f59e0b'), color: '#f59e0b', target: 5 },
+                    { id: 'w8', name: 'Gain Player XP', icon: createIcon(icons.star, '#fbbf24'), color: '#fbbf24', target: 5 }
+                ],
+                points: 0, chests: [false, false, false], taskProgress: {}, claimed: {}
+            },
+            monthly: {
+                tasks: [
+                    { id: 'm1', name: 'Complete Daily Quests', icon: createIcon(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
+                    { id: 'm2', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'm3', name: 'Obtain Tier 1 Skill', icon: createIcon(icons.star, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'm4', name: 'Obtain Tier 1 Pet', icon: createIcon(icons.pet, '#f97316'), color: '#f97316', target: 5 },
+                    { id: 'm5', name: 'Obtain Rare+ Skill or Pet', icon: createIcon(icons.gem, '#ec4899'), color: '#ec4899', target: 5 },
+                    { id: 'm6', name: 'Use Scrolls (Current Tier)', icon: createIcon(icons.scroll, '#fbbf24'), color: '#fbbf24', target: 5 },
+                    { id: 'm7', name: 'Use Scrolls (Current Tier+)', icon: createIcon(icons.scroll, '#f59e0b'), color: '#f59e0b', target: 5 },
+                    { id: 'm8', name: 'Use Cores (Current Tier)', icon: createIcon(icons.gem, '#6366f1'), color: '#6366f1', target: 5 }
+                ],
+                points: 0, chests: [false, false, false], taskProgress: {}, claimed: {}
+            }
+        };
+        const chestMilestones = [20, 40, 60];
+        const chestRewards = [
+            { icon: createIcon(icons.chest, '#10b981'), name: 'Bronze Chest', tier: 1 },
+            { icon: createIcon(icons.chest, '#3b82f6'), name: 'Silver Chest', tier: 2 },
+            { icon: createIcon(icons.chest, '#fbbf24'), name: 'Gold Chest', tier: 3 }
+        ];
+        // Pool of possible rewards for random selection
+        const rewardPool = [
+            { icon: createIcon(icons.gem, '#fbbf24'), name: 'Gems', amounts: ['x50', 'x100', 'x200'] },
+            { icon: createIcon(icons.scroll, '#a5f3fc'), name: 'Scrolls', amounts: ['x5', 'x10', 'x20'] },
+            { icon: createIcon(icons.energy, '#10b981'), name: 'Energy', amounts: ['x30', 'x60', 'x100'] },
+            { icon: createIcon(icons.star, '#ec4899'), name: 'Skill Tickets', amounts: ['x5', 'x10', 'x15'] },
+            { icon: createIcon(icons.pet, '#f97316'), name: 'Pet Tickets', amounts: ['x5', 'x10', 'x15'] },
+            { icon: createIcon(icons.potion, '#8b5cf6'), name: 'Potions', amounts: ['x10', 'x25', 'x50'] },
+            { icon: createIcon(icons.crown, '#dc2626'), name: 'XP Boost', amounts: ['x1', 'x2', 'x3'] },
+            { icon: createIcon(icons.gift, '#f59e0b'), name: 'Gift Box', amounts: ['x1', 'x2', 'x5'] }
+        ];
+        let currentTab = 'session';
+        let tabFirstVisit = { daily: true, weekly: true, monthly: true };
+        let debugOpen = false;
+
+        // ========== SESSION TAB DATA ==========
+        const sessionMilestones = [
+            { id: 's1', minutes: 5, reward: { icon: createIcon(icons.gem, '#fbbf24'), name: 'Gold', amount: '30K' }, feature: 'Forge Upgrade' },
+            { id: 's2', minutes: 20, reward: { icon: createIcon(icons.gem, '#a855f7'), name: 'Gems', amount: 'x75' }, feature: 'Shop' },
+            { id: 's3', minutes: 40, reward: { icon: createIcon(icons.energy, '#3b82f6'), name: 'Multi-Battle', amount: 'x45' }, feature: 'Dungeon' },
+            { id: 's4', minutes: 60, reward: { icon: createIcon(icons.star, '#ec4899'), name: 'Skill Tickets', amount: 'x37' }, feature: 'Wishing Well' },
+            { id: 's5', minutes: 90, reward: { icon: createIcon(icons.pet, '#f97316'), name: 'Pet Tickets', amount: 'x37' }, feature: 'Wishing Well' },
+            { id: 's6', minutes: 120, reward: { icon: createIcon(icons.crown, '#dc2626'), name: 'Royal Chest', amount: 'x1' }, feature: 'Great Hall' }
         ];
 
-        let sessionTime = 0;
-        let claimed = new Set();
-        let dotPositions = [];
+        const boostEffects = [
+            { id: 'idle', name: 'Idle Bonus', desc: '+20% Idle Rewards for 2 hours', icon: '💤', duration: 7200 },
+            { id: 'upgrade', name: 'Upgrade Speed', desc: '+30% Upgrade Speed for 2 hours', icon: '⚡', duration: 7200 },
+            { id: 'energy', name: 'No Energy Loss', desc: 'No Energy on Loss for 2 hours', icon: '🛡️', duration: 7200 }
+        ];
 
-        const elHeaderTitle = document.getElementById('header-title');
-        const elHeaderTimer = document.getElementById('header-timer');
-        const elLiquid = document.getElementById('liquid-bar');
-        const elTrack = document.getElementById('liquid-track');
-        const elContainer = document.getElementById('cards-container');
-        const elFooterTimer = document.getElementById('footer-timer');
-        const elFx = document.getElementById('fx-layer');
+        let sessionState = {
+            playtimeMinutes: 0,
+            claimedMilestones: {},
+            activeEffects: [], // { effectId, expiresAt }
+            currentBoostIndex: 0,  // For cycling through boost effects in debug
+            playerLevel: 1  // Player character level - affects reward scaling
+        };
 
-        // Modal & Toast Elements
-        const elModalOverlay = document.getElementById('modal-overlay');
-        const elModalIcon = document.getElementById('modal-icon');
-        const elModalTitle = document.getElementById('modal-title');
-        const elModalDesc = document.getElementById('modal-desc');
-        const elToast = document.getElementById('toast');
-        const elToastMsg = document.getElementById('toast-msg');
+        function initTaskProgress() {
+            ['daily', 'weekly', 'monthly'].forEach(tabName => {
+                const tabData = questData[tabName];
+                tabData.tasks.forEach(task => {
+                    tabData.taskProgress[task.id] = 0;
+                    tabData.claimed[task.id] = false;
+                });
+            });
+        }
 
-        function init() {
-            REWARDS.forEach(r => {
-                const row = document.createElement('div');
-                row.className = 'reward-row';
-                row.id = `row-${r.id}`;
+        function updateTimers() {
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
+            const weeklyTimerText = `${daysUntilMonday} day${daysUntilMonday > 1 ? 's' : ''} until reset`;
+            document.getElementById('weekly-timer').textContent = weeklyTimerText;
 
-                row.innerHTML = `
-                    <div class="dot" id="dot-${r.id}"></div>
-                    <div class="connector"></div>
-                    
-                    <div class="reward-card">
-                        <div class="icon-box">${r.icon}</div>
-                        <div class="card-content">
-                            <div class="card-time">${r.time} MIN</div>
-                            <div class="card-title">${r.title}</div>
+            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            const daysUntilMonthEnd = lastDayOfMonth.getDate() - now.getDate();
+            const monthlyTimerText = `${daysUntilMonthEnd} day${daysUntilMonthEnd > 1 ? 's' : ''} until reset`;
+            document.getElementById('monthly-timer').textContent = monthlyTimerText;
+        }
+
+        function hasClaimable(tabName) {
+            const data = questData[tabName];
+            const hasReadyTask = data.tasks.some(task =>
+                data.taskProgress[task.id] >= task.target && !data.claimed[task.id]
+            );
+            const hasReadyChest = chestMilestones.some((milestone, index) =>
+                data.points >= milestone && !data.chests[index]
+            );
+            return hasReadyTask || hasReadyChest;
+        }
+        function updateRedDots() {
+            let anyClaimable = false;
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                const tab = document.querySelector(`.tab-btn[data-tab="${t}"]`);
+                const has = hasClaimable(t);
+                if (tab) {
+                    tab.classList.toggle('has-reward', has);
+                    const dot = tab.querySelector('.tab-red-dot');
+                    if (dot) dot.style.display = has ? 'block' : 'none';
+                }
+                if (has) anyClaimable = true;
+            });
+            const mainDot = document.getElementById('mainRedDot');
+            if (mainDot) mainDot.style.display = anyClaimable ? 'block' : 'none';
+        }
+        function renderChests(tabName) {
+            const container = document.getElementById(`${tabName}-chests`);
+            if (!container) return;
+            const data = questData[tabName];
+            container.innerHTML = chestMilestones.map((m, i) => {
+                let cls = 'locked', icon = chestRewards[i].icon, showDot = false;
+                let label = m;
+                if (data.chests[i]) {
+                    cls = 'claimed';
+                    icon = chestRewards[i].icon;
+                    label = '✓';
+                }
+                else if (data.points >= m) { cls = 'available'; showDot = true; }
+                return `<div class="chest-item" onclick="${data.chests[i] ? '' : (data.points >= m ? `claimChest('${tabName}',${i})` : `showLockText(event,${m})`)}">
+                    <div class="chest-icon ${cls}">${icon}${showDot ? '<span class="chest-red-dot"></span>' : ''}</div>
+                    <div class="chest-points">${label}</div></div>`;
+            }).join('');
+        }
+
+        function getTaskStatus(data, task) {
+            const prog = data.taskProgress[task.id] || 0;
+            const done = prog >= task.target;
+            const claimed = data.claimed[task.id];
+            if (claimed) return 'collected';
+            if (done) return 'ready';
+            if (prog > 0) return 'inprogress';
+            return 'notstarted';
+        }
+        function renderTasks(tabName) {
+            const container = document.getElementById(`${tabName}-tasks`);
+            const bannerEl = document.getElementById(`${tabName}-complete-banner`);
+            if (!container) return;
+            const data = questData[tabName];
+            const sorted = [...data.tasks].sort((a, b) => {
+                const order = { ready: 0, inprogress: 1, notstarted: 2, collected: 3 };
+                return order[getTaskStatus(data, a)] - order[getTaskStatus(data, b)];
+            });
+            const allClaimed = data.tasks.every(t => data.claimed[t.id]);
+            if (bannerEl) bannerEl.innerHTML = allClaimed ? '<div class="all-completed-banner">✨ Destiny Fulfilled!</div>' : '';
+            container.innerHTML = sorted.map(task => {
+                const prog = data.taskProgress[task.id] || 0;
+                const status = getTaskStatus(data, task);
+                const pct = Math.min((prog / task.target) * 100, 100);
+                let itemClass = '';
+                let btnClass = '';
+                let btnText = 'Go';
+                let btnAction = 'showFloatingText(event)';
+
+                switch (status) {
+                    case 'collected':
+                        itemClass = 'collected' + (allClaimed ? ' all-completed' : '');
+                        btnClass = 'done';
+                        btnText = 'Done';
+                        btnAction = '';
+                        break;
+                    case 'ready':
+                        itemClass = 'ready-to-claim';
+                        btnClass = 'claim';
+                        btnText = 'Claim';
+                        btnAction = `claimTask('${tabName}','${task.id}')`;
+                        break;
+                    case 'inprogress':
+                        itemClass = 'in-progress';
+                        break;
+                }
+
+                const isDisabled = status === 'collected' ? 'disabled' : '';
+                return `<div class="task-item ${itemClass}">
+                    <div class="task-icon">${task.icon}</div>
+                    <div class="task-info">
+                        <div class="task-name">${task.name}</div>
+                        <div class="task-progress-container">
+                            <div class="task-progress-bar">
+                                <div class="task-progress-fill" style="width:${pct}%"></div>
+                            </div>
+                            <span class="task-progress-text">${prog}/${task.target}</span>
                         </div>
-                        <div class="btn-area">
-                            <button class="btn-claim" id="btn-${r.id}" onclick="handleClaim(${r.id}, this)">
-                                Soon
-                            </button>
-                            <div class="stamp-wrap">
-                                <div class="stamp-icon">
-                                    <svg class="crown-svg" viewBox="0 0 24 24">
-                                        <path d="M12 2L15 9L21 9L17 14L19 21L12 17L5 21L7 14L3 9L9 9L12 2Z" />
-                                    </svg>
-                                    Claimed
+                    </div>
+                    <div class="task-right">
+                        <div class="task-points">${createIcon(icons.star, '#fbbf24', 12)} 10</div>
+                        <button class="go-btn ${btnClass}" onclick="${btnAction}" ${isDisabled}>${btnText}</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        function updateProgressDisplay(tabName, animate = false) {
+            const data = questData[tabName];
+            const ptsEl = document.getElementById(`${tabName}-points`);
+            const fill = document.getElementById(`${tabName}-progress-fill`);
+            const progressWidth = `${Math.min((data.points / 60) * 100, 100)}%`;
+
+            if (ptsEl) {
+                ptsEl.textContent = `${data.points}/60`;
+            }
+
+            if (fill) {
+                if (animate) {
+                    fill.classList.remove('animate');
+                    fill.style.width = '0%';
+                    requestAnimationFrame(() => {
+                        fill.classList.add('animate');
+                        fill.style.width = progressWidth;
+                    });
+                } else {
+                    fill.classList.add('animate');
+                    fill.style.width = progressWidth;
+                }
+            }
+
+            renderChests(tabName);
+            updateRedDots();
+            updateDebugInfo();
+        }
+        function createFloatingText(event, message) {
+            event.stopPropagation();
+            const floatingEl = document.createElement('div');
+            floatingEl.className = 'floating-text';
+            floatingEl.textContent = message;
+            const rect = event.target.getBoundingClientRect();
+            floatingEl.style.left = `${rect.left + rect.width / 2}px`;
+            floatingEl.style.top = `${rect.top - 10}px`;
+            document.body.appendChild(floatingEl);
+            setTimeout(() => floatingEl.remove(), 2000);
+        }
+
+        function showFloatingText(event) {
+            createFloatingText(event, '👆 Destiny awaits...');
+        }
+
+        function showLockText(event, needed) {
+            createFloatingText(event, `🔒 Earn ${needed} favour to unlock`);
+        }
+        function claimTask(tabName, taskId) {
+            const data = questData[tabName];
+            if (data.taskProgress[taskId] >= data.tasks.find(t => t.id === taskId).target && !data.claimed[taskId]) {
+                data.claimed[taskId] = true;
+                data.points = Math.min(120, data.points + 10);
+                renderTasks(tabName);
+                updateProgressDisplay(tabName);
+            }
+        }
+        function claimNextReadyTask() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            const task = data.tasks.find(t => data.taskProgress[t.id] >= t.target && !data.claimed[t.id]);
+            if (task) claimTask(currentTab, task.id);
+        }
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabName}`));
+            document.getElementById('questModal').classList.add('active');
+            document.getElementById('mainScreen').style.display = 'none';
+
+            if (tabName === 'session') {
+                renderSessionMilestones();
+                // Focusing on next reward card
+                setTimeout(scrollToSessionTarget, 150);
+                setTimeout(calculateSessionPacing, 200);
+            } else {
+                updateProgressDisplay(tabName, true);
+                const taskList = document.getElementById(`${tabName}-tasks`);
+                if (taskList) taskList.scrollTop = 0;
+            }
+            updateDebugInfo();
+        }
+        function openQuestModal() {
+            document.getElementById('questModal').classList.add('active');
+            document.getElementById('mainScreen').style.display = 'none';
+            switchTab('session');
+        }
+        function closeQuestModal() {
+            document.getElementById('questModal').classList.remove('active');
+            document.getElementById('mainScreen').style.display = 'flex';
+        }
+        function showRewardPopup(rewards, chestName = 'Chest') {
+            const popup = document.getElementById('rewardPopup');
+            const items = document.getElementById('rewardItems');
+            const title = document.getElementById('reward-popup-title');
+            const hintEl = document.getElementById('reward-usage-hint');
+            const goBtn = document.getElementById('reward-go-btn');
+
+            if (title) title.textContent = chestName.toUpperCase() + ' OPENED!';
+            if (hintEl) hintEl.style.display = 'none';
+            if (goBtn) goBtn.style.display = 'none';
+
+            items.innerHTML = rewards.map(r => `<div class="reward-item"><div class="icon">${r.icon}</div><div class="amount">${r.name} ${r.amount}</div></div>`).join('');
+            popup.classList.add('active');
+        }
+
+        function closeRewardPopup() {
+            document.getElementById('rewardPopup').classList.remove('active');
+        }
+
+        function handleRewardGo() {
+            const msg = document.getElementById('reward-usage-desc')?.innerText || 'Redirecting...';
+            closeRewardPopup();
+            showAppToast(`Navigating to ${msg.split(' in ')[1] || 'feature'}...`);
+        }
+        function claimChest(tabName, index) {
+            const data = questData[tabName];
+            if (data.points >= chestMilestones[index] && !data.chests[index]) {
+                data.chests[index] = true;
+
+                // Generate 5 random rewards based on chest tier
+                const tier = chestRewards[index].tier;
+                const randomRewards = [];
+                const usedIndices = new Set();
+
+                for (let i = 0; i < 3; i++) {
+                    let poolIndex;
+                    do {
+                        poolIndex = Math.floor(Math.random() * rewardPool.length);
+                    } while (usedIndices.has(poolIndex) && usedIndices.size < rewardPool.length);
+                    usedIndices.add(poolIndex);
+
+                    const reward = rewardPool[poolIndex];
+                    // Higher tier = better amounts (index 0, 1, or 2 based on tier)
+                    const amountIndex = Math.min(tier - 1, reward.amounts.length - 1);
+                    randomRewards.push({
+                        icon: reward.icon,
+                        name: reward.name,
+                        amount: reward.amounts[amountIndex]
+                    });
+                }
+
+                showRewardPopup(randomRewards, chestRewards[index].name);
+                renderChests(tabName);
+                updateRedDots();
+                updateDebugInfo();
+            }
+        }
+        function toggleDebugPanel() {
+            debugOpen = !debugOpen;
+            document.getElementById('debugPanel').classList.toggle('open', debugOpen);
+        }
+        function addPoints(amt) {
+            if (currentTab === 'session') return;
+            questData[currentTab].points = Math.max(0, Math.min(120, questData[currentTab].points + amt));
+            updateProgressDisplay(currentTab);
+        }
+        function setPoints(amt) {
+            if (currentTab === 'session') return;
+            questData[currentTab].points = Math.min(120, Math.max(0, amt));
+            updateProgressDisplay(currentTab);
+        }
+        function progressNextTask() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            const task = data.tasks.find(t => data.taskProgress[t.id] < t.target && !data.claimed[t.id]);
+            if (task) {
+                data.taskProgress[task.id] = Math.min(data.taskProgress[task.id] + 1, task.target);
+                renderTasks(currentTab);
+                updateRedDots();
+                updateDebugInfo();
+            }
+        }
+        function completeNextTask() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            const task = data.tasks.find(t => data.taskProgress[t.id] < t.target);
+            if (task) {
+                data.taskProgress[task.id] = task.target;
+                renderTasks(currentTab);
+                updateRedDots();
+                updateDebugInfo();
+            }
+        }
+
+        function completeAllTasks() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            data.tasks.forEach(t => {
+                data.taskProgress[t.id] = t.target;
+            });
+            renderTasks(currentTab);
+            updateRedDots();
+            updateDebugInfo();
+        }
+        function claimAvailableChests() {
+            if (currentTab === 'session') return;
+            const data = questData[currentTab];
+            let rewards = [];
+            chestMilestones.forEach((m, i) => {
+                if (data.points >= m && !data.chests[i]) {
+                    data.chests[i] = true;
+                    rewards = [...rewards, ...chestRewards[i]];
+                }
+            });
+            renderChests(currentTab);
+            updateRedDots();
+            updateDebugInfo();
+            if (rewards.length > 0) {
+                showRewardPopup(rewards);
+            }
+        }
+
+        function claimAllChests() {
+            if (currentTab === 'session') return;
+            questData[currentTab].chests = [true, true, true, true, true];
+            renderChests(currentTab);
+            updateRedDots();
+            updateDebugInfo();
+        }
+
+        function resetCurrentTab() {
+            if (currentTab === 'session') {
+                resetSession();
+                return;
+            }
+            const data = questData[currentTab];
+            data.points = 0;
+            data.chests = [false, false, false, false, false];
+            data.tasks.forEach(t => {
+                data.taskProgress[t.id] = 0;
+                data.claimed[t.id] = false;
+            });
+            tabFirstVisit[currentTab] = true;
+            renderTasks(currentTab);
+            updateProgressDisplay(currentTab);
+        }
+
+        function resetAll() {
+            ['daily', 'weekly', 'monthly'].forEach(tabName => {
+                const data = questData[tabName];
+                data.points = 0;
+                data.chests = [false, false, false, false, false];
+                data.tasks.forEach(task => {
+                    data.taskProgress[task.id] = 0;
+                    data.claimed[task.id] = false;
+                });
+                tabFirstVisit[tabName] = true;
+                renderTasks(tabName);
+                updateProgressDisplay(tabName, false);
+            });
+            resetSession();
+        }
+        function updateDebugInfo() {
+            document.getElementById('debug-current-tab').textContent = currentTab;
+            if (currentTab === 'session') {
+                document.getElementById('debug-current-points').textContent = `${sessionState.playtimeMinutes} min`;
+                document.getElementById('debug-chests-claimed').textContent = `Lv.${sessionState.playerLevel}`;
+                const claimedCount = Object.keys(sessionState.claimedMilestones).filter(k => sessionState.claimedMilestones[k]).length;
+                document.getElementById('debug-tasks-done').textContent = `${claimedCount}/${sessionMilestones.length}`;
+            } else {
+                const data = questData[currentTab];
+                document.getElementById('debug-current-points').textContent = data.points;
+                document.getElementById('debug-chests-claimed').textContent = `${data.chests.filter(c => c).length}/5`;
+                document.getElementById('debug-tasks-done').textContent = `${data.tasks.filter(t => data.claimed[t.id]).length}/${data.tasks.length}`;
+            }
+        }
+
+        // Inject Main Screen Icon
+        document.querySelector('.quest-icon-btn .icon').innerHTML = createIcon(icons.scroll, "currentColor", 42);
+
+        // ========== SESSION TAB FUNCTIONS ==========
+        function formatTime(mins) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return h > 0 ? `${h}h ${m}m` : `${m}m`;
+        }
+
+        function formatTimerCountdown(mins, currentMins) {
+            const remaining = mins - currentMins;
+            if (remaining <= 0) return '00:00';
+            const m = Math.floor(remaining);
+            const s = Math.round((remaining - m) * 60);
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function getNextMilestone() {
+            return sessionMilestones.find(m => sessionState.playtimeMinutes < m.minutes) || sessionMilestones[sessionMilestones.length - 1];
+        }
+
+        function scaleRewardAmount(amount, playerLevel) {
+            if (!amount) return amount;
+            const numMatch = amount.match(/(\d+)/);
+            if (!numMatch) return amount;
+            const baseNum = parseInt(numMatch[1]);
+            const scaled = Math.floor(baseNum * (1 + (playerLevel - 1) * 0.1));
+            return amount.replace(/\d+/, scaled);
+        }
+
+        function formatMilestoneTime(minutes) {
+            if (minutes >= 60) {
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+            }
+            return `${minutes}m`;
+        }
+
+        function renderSessionMilestones() {
+            const container = document.getElementById('session-cards-container');
+            if (!container) return;
+
+            // Render cards (only once, then update states)
+            if (container.children.length === 0) {
+                container.innerHTML = sessionMilestones.map(ms => {
+                    const scaledAmount = ms.isChoice ? ms.reward.amount : scaleRewardAmount(ms.reward.amount, sessionState.playerLevel);
+                    return `
+                        <div class="session-reward-row" id="session-row-${ms.id}">
+                            <div class="session-dot" id="session-dot-${ms.id}"></div>
+                            <div class="session-connector"></div>
+                            
+                            <div class="session-reward-card">
+                                <div class="session-icon-box">${ms.reward.icon}</div>
+                                <div class="session-card-content">
+                                    <div class="session-card-time">${ms.minutes} MIN</div>
+                                    <div class="session-card-title">${ms.reward.name}${scaledAmount ? ' ' + scaledAmount : ''}</div>
+                                </div>
+                                <div class="session-btn-area">
+                                    <button class="session-btn-claim" id="session-btn-${ms.id}" onclick="handleSessionClaim('${ms.id}', this)">
+                                        Soon
+                                    </button>
+                                    <div class="session-stamp-wrap">
+                                        <div class="session-stamp-icon">
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M12 2L15 9L21 9L17 14L19 21L12 17L5 21L7 14L3 9L9 9L12 2Z" />
+                                            </svg>
+                                            Claimed
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                elContainer.appendChild(row);
-            });
+                    `;
+                }).join('');
 
-            setTimeout(calculatePacing, 100);
-            requestAnimationFrame(loop);
-            updateFooterRealtime();
+                // Calculate dot positions for liquid bar after layout
+                setTimeout(calculateSessionPacing, 100);
+            }
+
+            updateSessionCardStates();
         }
 
-        function calculatePacing() {
-            const trackRect = elTrack.getBoundingClientRect();
-            dotPositions = REWARDS.map(r => {
-                const dot = document.getElementById(`dot-${r.id}`);
+        // Session dot positions for liquid bar calculation
+        let sessionDotPositions = [];
+
+        function calculateSessionPacing() {
+            const track = document.getElementById('session-liquid-track');
+            if (!track) return;
+
+            const trackRect = track.getBoundingClientRect();
+            sessionDotPositions = sessionMilestones.map(ms => {
+                const dot = document.getElementById(`session-dot-${ms.id}`);
+                if (!dot) return { minutes: ms.minutes, pct: 0 };
                 const dotRect = dot.getBoundingClientRect();
                 const dotCenter = dotRect.top + (dotRect.height / 2);
                 const pxHeight = trackRect.bottom - dotCenter;
                 const pct = (pxHeight / trackRect.height) * 100;
-                return { time: r.time, pct: Math.max(0, Math.min(100, pct)) };
+                return { minutes: ms.minutes, pct: Math.max(0, Math.min(100, pct)) };
             });
-            dotPositions.unshift({ time: 0, pct: 0 });
-            dotPositions.push({ time: 9999, pct: 100 });
-            dotPositions.sort((a, b) => a.time - b.time);
+            sessionDotPositions.unshift({ minutes: 0, pct: 0 });
+            sessionDotPositions.push({ minutes: 9999, pct: 100 });
+            sessionDotPositions.sort((a, b) => a.minutes - b.minutes);
         }
 
-        let lastTick = performance.now();
-        function loop(now) {
-            const dt = (now - lastTick) / 1000;
-            lastTick = now;
-            sessionTime += dt * 3;
+        window.addEventListener('resize', () => {
+            if (currentTab === 'session') calculateSessionPacing();
+        });
 
-            const nextReward = REWARDS.find(r => r.time > sessionTime);
-            updateHeader(nextReward);
-
-            if (dotPositions.length > 0) {
-                let targetPct = 0;
-                for (let i = 0; i < dotPositions.length - 1; i++) {
-                    const curr = dotPositions[i];
-                    const next = dotPositions[i + 1];
-                    if (sessionTime >= curr.time && sessionTime < next.time) {
-                        const progress = (sessionTime - curr.time) / (next.time - curr.time);
-                        targetPct = curr.pct + (progress * (next.pct - curr.pct));
-                        break;
-                    } else if (sessionTime >= next.time) {
-                        targetPct = next.pct;
-                    }
-                }
-                elLiquid.style.height = `${targetPct}%`;
-            }
-
+        function updateSessionCardStates() {
             let foundNext = false;
-            REWARDS.forEach(r => {
-                const row = document.getElementById(`row-${r.id}`);
-                const btn = document.getElementById(`btn-${r.id}`);
-                row.classList.remove('next-up');
 
-                if (claimed.has(r.id)) {
-                    if (!row.classList.contains('claimed')) {
-                        row.classList.add('claimed');
-                        row.classList.remove('active');
-                    }
+            sessionMilestones.forEach(ms => {
+                const row = document.getElementById(`session-row-${ms.id}`);
+                const btn = document.getElementById(`session-btn-${ms.id}`);
+                if (!row || !btn) return;
+
+                row.classList.remove('next-up', 'active', 'claimed');
+                btn.classList.remove('ready');
+
+                const claimed = sessionState.claimedMilestones[ms.id];
+                const unlocked = sessionState.playtimeMinutes >= ms.minutes;
+
+                if (claimed) {
+                    row.classList.add('claimed');
+                } else if (unlocked) {
+                    row.classList.add('active');
+                    btn.innerText = ms.isChoice ? 'CHOOSE' : 'CLAIM';
+                    btn.classList.add('ready');
                 } else {
-                    if (sessionTime >= r.time) {
-                        if (!row.classList.contains('active')) {
-                            row.classList.add('active');
-                            btn.innerText = "CLAIM";
-                            btn.classList.add('ready');
-                        }
-                    } else {
-                        btn.classList.remove('ready');
-                        const timeLeft = r.time - sessionTime;
-                        if (timeLeft > 30) btn.innerText = "Soon";
-                        else if (timeLeft > 15) btn.innerText = "Hold tight";
-                        else btn.innerText = "Patience, hero";
+                    const timeLeft = ms.minutes - sessionState.playtimeMinutes;
+                    if (timeLeft > 30) btn.innerText = 'Soon';
+                    else if (timeLeft > 15) btn.innerText = 'Hold tight';
+                    else btn.innerText = 'Almost...';
 
-                        if (!foundNext) {
-                            row.classList.add('next-up');
-                            foundNext = true;
-                        }
+                    if (!foundNext) {
+                        row.classList.add('next-up');
+                        foundNext = true;
                     }
                 }
             });
-            requestAnimationFrame(loop);
+
+            // Update liquid bar
+            updateSessionLiquidBar();
+
+            // Update header
+            updateSessionHeader();
         }
 
-        function updateHeader(nextReward) {
-            const allClaimed = REWARDS.every(r => claimed.has(r.id));
+        function scrollToSessionTarget() {
+            const container = document.querySelector('.session-rewards-container');
+            if (!container) return;
+
+            // Find rows that are "active" (uncollected)
+            const activeRows = Array.from(document.querySelectorAll('.session-reward-row.active'));
+            let targetRow = null;
+
+            if (activeRows.length > 0) {
+                // "Lowest" uncollected - in our list (5, 20, 40...) s1 is 5 min.
+                // We want the one with the smallest minute value among active ones.
+                targetRow = activeRows.reduce((prev, curr) => {
+                    const prevId = prev.id.replace('session-row-', '');
+                    const currId = curr.id.replace('session-row-', '');
+                    const prevMs = sessionMilestones.find(m => m.id === prevId);
+                    const currMs = sessionMilestones.find(m => m.id === currId);
+                    return (prevMs.minutes < currMs.minutes) ? prev : curr;
+                });
+            } else {
+                // If no active (ready to claim), find the "next-up" row
+                targetRow = document.querySelector('.session-reward-row.next-up');
+            }
+
+            if (targetRow) {
+                targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function updateSessionLiquidBar() {
+            const fill = document.getElementById('session-liquid-fill');
+            if (!fill) return;
+
+            const currentTotal = sessionState.playtimeMinutes + (sessionSecondsCounter / 60);
+
+            // Piecewise linear interpolation using sessionDotPositions
+            if (!sessionDotPositions || sessionDotPositions.length < 2) {
+                // Fallback to purely linear if not calculated yet
+                const maxMins = 120;
+                const targetPct = Math.min((currentTotal / maxMins) * 100, 100);
+                fill.style.height = `${targetPct}%`;
+                return;
+            }
+
+            // Find the segment
+            let p1 = sessionDotPositions[0];
+            let p2 = sessionDotPositions[sessionDotPositions.length - 1];
+
+            for (let i = 0; i < sessionDotPositions.length - 1; i++) {
+                if (currentTotal >= sessionDotPositions[i].minutes && currentTotal <= sessionDotPositions[i + 1].minutes) {
+                    p1 = sessionDotPositions[i];
+                    p2 = sessionDotPositions[i + 1];
+                    break;
+                }
+            }
+
+            const rangeMins = p2.minutes - p1.minutes;
+            const rangePct = p2.pct - p1.pct;
+            let targetPct = p1.pct;
+
+            if (rangeMins > 0) {
+                const ratio = (currentTotal - p1.minutes) / rangeMins;
+                targetPct = p1.pct + (ratio * rangePct);
+            }
+
+            fill.style.height = `${Math.min(100, Math.max(0, targetPct))}%`;
+        }
+
+        function updateSessionHeader() {
+            const timerEl = document.getElementById('session-next-timer');
+            const sentenceEl = document.getElementById('session-dynamic-sentence');
+            const completionScreen = document.getElementById('session-completion-screen');
+            const gridEl = document.getElementById('session-grid');
+
+            const allClaimed = sessionMilestones.every(ms => sessionState.claimedMilestones[ms.id]);
+            const anyReady = sessionMilestones.some(ms =>
+                sessionState.playtimeMinutes >= ms.minutes && !sessionState.claimedMilestones[ms.id]
+            );
+            const nextMs = getNextMilestone();
+
             if (allClaimed) {
-                elHeaderTitle.innerText = "You emptied the shelf";
-                elHeaderTimer.style.opacity = 0;
+                if (timerEl) {
+                    timerEl.style.display = 'none';
+                }
+                if (sentenceEl) sentenceEl.innerText = "Shelf cleared!";
+                if (completionScreen) completionScreen.style.display = 'flex';
+                if (gridEl) gridEl.style.display = 'none';
                 return;
+            } else {
+                if (completionScreen) completionScreen.style.display = 'none';
+                if (gridEl) gridEl.style.display = 'grid';
+                if (timerEl) timerEl.style.display = 'block';
             }
-            const anyReady = REWARDS.some(r => sessionTime >= r.time && !claimed.has(r.id));
+
             if (anyReady) {
-                elHeaderTitle.innerText = "Done. Take it.";
-                elHeaderTimer.style.opacity = 0.5;
-                elHeaderTimer.innerText = "REWARD READY";
-                return;
-            }
-            if (!nextReward) {
-                elHeaderTitle.innerText = "All Unlocked";
-                elHeaderTimer.style.opacity = 0;
+                if (timerEl) timerEl.innerText = "READY TO CLAIM!";
+                if (sentenceEl) sentenceEl.innerText = "Done. Take it.";
+                updateSessionLiquidBar();
                 return;
             }
 
-            const diff = nextReward.time - sessionTime;
+            if (!nextMs) {
+                if (timerEl) timerEl.innerText = "All rewards unlocked";
+                if (sentenceEl) sentenceEl.innerText = "Just waiting for you to claim them.";
+                updateSessionLiquidBar();
+                return;
+            }
+
+            const diff = nextMs.minutes - sessionState.playtimeMinutes;
             const m = Math.floor(diff);
-            const s = Math.floor((diff - m) * 60);
-            elHeaderTimer.innerText = `NEXT REWARD IN ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            elHeaderTimer.style.opacity = 1;
+            if (timerEl) {
+                timerEl.innerText = `Next reward in ${m}m`;
+            }
 
-            if (diff > 20) elHeaderTitle.innerText = "Reward’s busy becoming awesome.";
-            else if (diff > 15) elHeaderTitle.innerText = "It’s getting better by the minute.";
-            else if (diff > 5) elHeaderTitle.innerText = "Almost done cooking.";
-            else elHeaderTitle.innerText = "Just about ready.";
+            // Dynamic sentences based on time left
+            if (sentenceEl) {
+                if (m > 20) sentenceEl.innerText = "Reward’s busy becoming awesome.";
+                else if (m > 15) sentenceEl.innerText = "It’s getting better by the minute.";
+                else if (m > 5) sentenceEl.innerText = "Almost done cooking.";
+                else sentenceEl.innerText = "Just about ready.";
+            }
+
+            // Also update the vertical liquid track
+            updateSessionLiquidBar();
         }
 
-        window.handleClaim = function (id, btn) {
-            const r = REWARDS.find(x => x.id === id);
-            if (sessionTime >= r.time && !claimed.has(id)) {
-                // FX
-                const rect = btn.getBoundingClientRect();
-                spawnSuperBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        function handleSessionClaim(msId, btn) {
+            const ms = sessionMilestones.find(m => m.id === msId);
+            if (!ms || sessionState.claimedMilestones[msId]) return;
+            if (sessionState.playtimeMinutes < ms.minutes) return;
 
-                // Logic
-                claimed.add(id);
+            if (ms.isChoice) {
+                showChoicePopup();
+                return;
+            }
 
-                // POPUP - IMMEDIATE TRIGGER
-                showPopup(r);
+            // Particle burst
+            const rect = btn.getBoundingClientRect();
+            spawnSessionBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+            // Mark claimed
+            sessionState.claimedMilestones[msId] = true;
+
+            // Show reward popup with this item
+            showSessionRewardPopup(ms);
+
+            updateSessionCardStates();
+            updateSessionRedDot();
+        }
+
+        function showSessionRewardPopup(ms) {
+            const scaledAmount = scaleRewardAmount(ms.reward.amount, sessionState.playerLevel);
+            const itemsHtml = `
+                <div class="reward-item">
+                    <div class="icon">${ms.reward.icon}</div>
+                    <div class="amount">${ms.reward.name}<br>${scaledAmount}</div>
+                </div>
+            `;
+
+            const popup = document.getElementById('rewardPopup');
+            const itemsContainer = document.getElementById('rewardItems');
+            const titleEl = document.getElementById('reward-popup-title');
+            const hintEl = document.getElementById('reward-usage-hint');
+            const descEl = document.getElementById('reward-usage-desc');
+            const goBtn = document.getElementById('reward-go-btn');
+
+            if (titleEl) titleEl.textContent = 'REWARD CLAIMED!';
+            if (itemsContainer) itemsContainer.innerHTML = itemsHtml;
+
+            if (hintEl && descEl && goBtn) {
+                hintEl.style.display = 'flex';
+                descEl.innerText = `You can use ${ms.reward.name} in ${ms.feature}`;
+                goBtn.style.display = 'block';
+            }
+
+            popup.classList.add('active');
+        }
+
+        function scrollToNextReward() {
+            const container = document.querySelector('.session-layout-grid');
+            if (!container) return;
+
+            // Find first active or next-up row
+            const targetRow = container.querySelector('.session-reward-row.active') ||
+                container.querySelector('.session-reward-row.next-up');
+
+            if (targetRow) {
+                // Scroll so target is near top but with some padding
+                const scrollPos = targetRow.offsetTop - 20;
+                container.scrollTo({
+                    top: scrollPos,
+                    behavior: 'smooth'
+                });
             }
         }
 
-        function showPopup(item) {
-            elModalIcon.innerText = item.icon;
-            elModalTitle.innerText = item.title;
-            elModalDesc.innerText = item.usage; // Dynamic Text
+        function spawnSessionBurst(x, y) {
+            const fxLayer = document.getElementById('session-fx-layer');
+            if (!fxLayer) return;
 
-            elModalOverlay.classList.add('open');
-        }
-
-        window.closePopup = function () {
-            elModalOverlay.classList.remove('open');
-        }
-
-        window.navFromPopup = function () {
-            closePopup();
-            // Trigger Toast after small delay for popup exit
-            setTimeout(() => {
-                showToast("Directed to relevant feature");
-            }, 300);
-        }
-
-        function showToast(msg) {
-            elToastMsg.innerText = msg;
-            elToast.classList.add('show');
-            setTimeout(() => {
-                elToast.classList.remove('show');
-            }, 3000);
-        }
-
-        function spawnSuperBurst(x, y) {
             const colors = ['#F59E0B', '#FCD34D', '#FFF', '#FBBF24'];
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 40; i++) {
                 const p = document.createElement('div');
-                p.classList.add('particle');
+                p.classList.add('session-particle');
                 const size = Math.random() * 8 + 4;
                 p.style.width = size + 'px';
                 p.style.height = size + 'px';
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = x + 'px';
-                p.style.top = y + 'px';
+
+                // Get position relative to fx layer
+                const layerRect = fxLayer.getBoundingClientRect();
+                p.style.left = (x - layerRect.left) + 'px';
+                p.style.top = (y - layerRect.top) + 'px';
 
                 const angle = Math.random() * Math.PI * 2;
-                const dist = 60 + Math.random() * 80;
-                const duration = 600 + Math.random() * 600;
+                const dist = 50 + Math.random() * 70;
+                const duration = 500 + Math.random() * 500;
 
                 p.animate([
                     { transform: 'translate(0,0) scale(1)', opacity: 1 },
@@ -973,23 +3092,167 @@
                     duration: duration,
                     easing: 'cubic-bezier(0, .7, .4, 1)'
                 }).onfinish = () => p.remove();
-                elFx.appendChild(p);
+                fxLayer.appendChild(p);
             }
         }
 
-        function updateFooterRealtime() {
+        function showAppToast(msg) {
+            const toast = document.getElementById('app-toast');
+            const msgEl = document.getElementById('app-toast-msg');
+            if (!toast || !msgEl) return;
+
+            msgEl.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateSessionFooter() {
+            const footerEl = document.getElementById('session-footer-timer');
+            if (!footerEl) return;
+
             const now = new Date();
             const h = 23 - now.getUTCHours();
             const m = 59 - now.getUTCMinutes();
             const s = 59 - now.getUTCSeconds();
-            elFooterTimer.innerText = `Rewards refresh in ${pad(h)}:${pad(m)}:${pad(s)}`;
-            setTimeout(updateFooterRealtime, 1000);
+            footerEl.innerText = `Rewards refresh in ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }
-        function pad(n) { return String(n).padStart(2, '0'); }
 
-        window.addEventListener('resize', calculatePacing);
+
+
+        function showChoicePopup() {
+            const container = document.getElementById('choiceOptions');
+
+            // Show ALL 3 boost options
+            container.innerHTML = boostEffects.map(boost => `
+                <div class="choice-option" onclick="selectBoost('${boost.id}')">
+                    <div class="choice-option-icon">${boost.icon}</div>
+                    <div class="choice-option-info">
+                        <div class="choice-option-name">${boost.name}</div>
+                        <div class="choice-option-desc">${boost.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('choicePopup').classList.add('active');
+        }
+
+
+        function selectBoost(effectId) {
+            const boost = boostEffects.find(b => b.id === effectId);
+            if (!boost) return;
+
+            // Mark 60-min milestone as claimed
+            const ms60 = sessionMilestones.find(m => m.isChoice);
+            if (ms60) sessionState.claimedMilestones[ms60.id] = true;
+
+            // Add effect
+            const expiresAt = Date.now() + (boost.duration * 1000);
+            // Remove existing same effect and add new
+            sessionState.activeEffects = sessionState.activeEffects.filter(e => e.effectId !== effectId);
+            sessionState.activeEffects.push({ effectId, expiresAt });
+
+            document.getElementById('choicePopup').classList.remove('active');
+            renderSessionMilestones();
+            updateSessionRedDot();
+        }
+
+        function addSessionTime(mins) {
+            sessionState.playtimeMinutes += mins;
+            renderSessionMilestones();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+        function setSessionTime(mins) {
+            sessionState.playtimeMinutes = mins;
+            renderSessionMilestones();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+        function changePlayerLevel(delta) {
+            sessionState.playerLevel = Math.max(1, Math.min(100, sessionState.playerLevel + delta));
+            renderSessionMilestones();
+            updateDebugInfo();
+        }
+
+        function resetSession() {
+            sessionState.playtimeMinutes = 0;
+            sessionState.claimedMilestones = {};
+            sessionState.activeEffects = [];
+            // Clear cards container to force re-render
+            const container = document.getElementById('session-cards-container');
+            if (container) container.innerHTML = '';
+            renderSessionMilestones();
+            updateSessionRedDot();
+            updateDebugInfo();
+        }
+
+
+        function hasSessionClaimable() {
+            return sessionMilestones.some(ms =>
+                sessionState.playtimeMinutes >= ms.minutes && !sessionState.claimedMilestones[ms.id]
+            );
+        }
+
+        function updateSessionRedDot() {
+            const sessionTab = document.querySelector('.tab-btn[data-tab="session"]');
+            if (sessionTab) {
+                const redDot = sessionTab.querySelector('.tab-red-dot');
+                if (redDot) {
+                    redDot.style.display = hasSessionClaimable() ? 'block' : 'none';
+                }
+            }
+            // Update main button
+            const anyClaimable = hasSessionClaimable() || ['daily', 'weekly', 'monthly'].some(t => hasClaimable(t));
+            const mainDot = document.getElementById('mainRedDot');
+            if (mainDot) mainDot.style.display = anyClaimable ? 'block' : 'none';
+        }
+
+
+        // Update session header and footer every second
+        setInterval(() => {
+            if (currentTab === 'session') {
+                updateSessionHeader();
+                updateSessionFooter();
+            }
+        }, 1000);
+
+        // Real-time playtime counter (1 second = 1 second, every 60 seconds = 1 minute)
+        let sessionSecondsCounter = 0;
+        setInterval(() => {
+            sessionSecondsCounter++;
+            if (sessionSecondsCounter >= 60) {
+                sessionSecondsCounter = 0;
+                sessionState.playtimeMinutes++;
+                if (currentTab === 'session') {
+                    updateSessionCardStates();
+                    updateSessionRedDot();
+                }
+            }
+        }, 1000);
+
+        function init() {
+            initTaskProgress();
+            updateTimers();
+
+            ['daily', 'weekly', 'monthly'].forEach(tabName => {
+                renderTasks(tabName);
+                renderChests(tabName);
+            });
+
+            renderSessionMilestones();
+            updateRedDots();
+            updateSessionRedDot();
+            updateDebugInfo();
+
+            // Recalculate pacing on window resize
+            window.addEventListener('resize', calculateSessionPacing);
+        }
+
         init();
-
     </script>
 </body>
 
