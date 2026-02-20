@@ -613,36 +613,22 @@
             box-shadow: 0px 4px 0px 0px var(--accent-positive-dark);
         }
 
-        .task-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-button);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            flex-shrink: 0;
-            background: var(--inlay);
-            border: 2px solid var(--inlay-dark);
-            position: relative;
-        }
-
-        .task-icon svg {
-            width: 28px;
-            height: 28px;
-            stroke-width: 2.5;
-        }
-
         .task-info {
             flex: 1;
             min-width: 0;
+        }
+
+        .task-name-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         .task-name {
             font-size: 14px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 8px;
             font-family: var(--font-body);
         }
 
@@ -677,41 +663,36 @@
             text-align: right;
         }
 
-        .task-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-        }
-
         .task-points {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             color: var(--accent-warning);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
+            flex-shrink: 0;
         }
 
         .go-btn {
             padding: 10px 20px;
             border-radius: var(--radius-button);
-            background: var(--surface);
-            border: 2px solid var(--inlay-dark);
-            color: var(--text-primary);
+            background: var(--accent-primary);
+            border: 2px solid var(--accent-primary-dark);
+            color: #FFFFFF;
             font-size: 11px;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            box-shadow: 0px 4px 0px 0px #CBD5E1;
+            box-shadow: 0px 4px 0px 0px var(--accent-primary-dark);
             font-family: var(--font-header);
+            flex-shrink: 0;
         }
 
         .go-btn:hover {
             transform: translateY(2px);
-            box-shadow: 0px 2px 0px 0px #CBD5E1;
+            box-shadow: 0px 2px 0px 0px var(--accent-primary-dark);
         }
 
         .go-btn:active {
@@ -720,15 +701,15 @@
         }
 
         .go-btn.claim {
-            background: var(--accent-warning);
-            color: var(--text-primary);
-            border-color: #D97706;
-            box-shadow: 0px 4px 0px 0px #92400E;
+            background: var(--accent-positive);
+            color: #FFFFFF;
+            border-color: var(--accent-positive-dark);
+            box-shadow: 0px 4px 0px 0px var(--accent-positive-dark);
         }
 
         .go-btn.claim:hover {
             transform: translateY(2px);
-            box-shadow: 0px 2px 0px 0px #92400E;
+            box-shadow: 0px 2px 0px 0px var(--accent-positive-dark);
         }
 
         .go-btn.done {
@@ -1967,9 +1948,9 @@
             transform: translateX(-50%);
             padding: 8px 16px;
             background: var(--bg-overlay);
-            border: 1px solid var(--border-stone);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 8px;
-            color: var(--text-primary);
+            color: #FFFFFF;
             font-size: 13px;
             font-weight: 600;
             white-space: nowrap;
@@ -2012,7 +1993,7 @@
                 <button class="debug-btn danger" onclick="addPoints(-10)">-10</button>
                 <button class="debug-btn danger" onclick="addPoints(-20)">-20</button>
             </div>
-            <button class="debug-btn" onclick="setPoints(100)">Set to 100 pts</button>
+            <button class="debug-btn" onclick="setPoints(60)">Set to 60 pts</button>
         </div>
         <div class="debug-section">
             <div class="debug-section-title">Task Controls</div>
@@ -2039,6 +2020,19 @@
             <button class="debug-btn" onclick="claimAllChests()">Claim All</button>
         </div>
         <div class="debug-section">
+            <div class="debug-section-title">Time Warp (Days)</div>
+            <div class="debug-btn-row">
+                <button class="debug-btn success" onclick="addDebugDays(1)">+1d</button>
+                <button class="debug-btn success" onclick="addDebugDays(3)">+3d</button>
+                <button class="debug-btn success" onclick="addDebugDays(7)">+7d</button>
+            </div>
+            <div class="debug-btn-row">
+                <button class="debug-btn danger" onclick="addDebugDays(-1)">-1d</button>
+                <button class="debug-btn danger" onclick="addDebugDays(-3)">-3d</button>
+                <button class="debug-btn danger" onclick="debugDayOffset=0;updateTimers();updateDebugInfo();">Reset</button>
+            </div>
+        </div>
+        <div class="debug-section">
             <div class="debug-section-title">Reset</div>
             <button class="debug-btn danger" onclick="resetCurrentTab()">Reset Tab</button>
             <button class="debug-btn danger" onclick="resetAll()">Reset All</button>
@@ -2054,6 +2048,8 @@
                         id="debug-chests-claimed">0/5</span></div>
                 <div class="debug-info-row"><span class="debug-info-label">Tasks:</span><span class="debug-info-value"
                         id="debug-tasks-done">0/0</span></div>
+                <div class="debug-info-row"><span class="debug-info-label">Day Offset:</span><span class="debug-info-value"
+                        id="debug-day-offset">0</span></div>
             </div>
         </div>
     </div>
@@ -2089,7 +2085,7 @@
                     <div class="progress-section">
                         <div class="progress-header">
                             <span class="activity-label">Session Rewards</span>
-                            <div class="session-dynamic-sentence" id="session-dynamic-sentence">Loading rewards...</div>
+                            <div class="session-dynamic-sentence" id="session-dynamic-sentence"></div>
                             <div class="timer-display" id="session-next-timer">Next reward in --:--</div>
                         </div>
                     </div>
@@ -2121,7 +2117,7 @@
                     <div class="progress-section">
                         <div class="progress-header">
                             <div><span class="activity-label">Daily Activity</span>
-                                <div class="timer-display">Resets at 00:00</div>
+                                <div class="timer-display" id="daily-timer"></div>
                             </div>
                             <div class="activity-points" id="daily-points">0/60</div>
                         </div>
@@ -2236,39 +2232,33 @@
             daily: {
                 tasks: [
                     { id: 'd1', name: 'Collect AFK Chest', icon: createIcon(icons.chest, '#10b981'), color: '#10b981', target: 5 },
-                    { id: 'd2', name: 'Claim Daily Login', icon: createIcon(icons.calendar, '#3b82f6'), color: '#3b82f6', target: 5 },
-                    { id: 'd3', name: 'Claim Free Shop Pack', icon: createIcon(icons.gift, '#f59e0b'), color: '#f59e0b', target: 5 },
-                    { id: 'd4', name: 'Play Frozen Maw', icon: createIcon(icons.sword, '#06b6d4'), color: '#06b6d4', target: 5 },
-                    { id: 'd5', name: 'Play Cursed Heartwood', icon: createIcon(icons.shield, '#10b981'), color: '#10b981', target: 5 },
-                    { id: 'd6', name: 'Play Hall of Tomes', icon: createIcon(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 5 },
-                    { id: 'd7', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
-                    { id: 'd8', name: 'Fight Clan Boss', icon: createIcon(icons.crown, '#dc2626'), color: '#dc2626', target: 5 }
+                    { id: 'd2', name: 'Claim Daily Login', icon: createIcon(icons.calendar, '#3b82f6'), color: '#3b82f6', target: 1 },
+                    { id: 'd3', name: 'Claim Free Shop Pack', icon: createIcon(icons.gift, '#f59e0b'), color: '#f59e0b', target: 1 },
+                    { id: 'd4', name: 'Play Frozen Maw', icon: createIcon(icons.sword, '#06b6d4'), color: '#06b6d4', target: 3 },
+                    { id: 'd5', name: 'Play Cursed Heartwood', icon: createIcon(icons.shield, '#10b981'), color: '#10b981', target: 3 },
+                    { id: 'd6', name: 'Play Hall of Tomes', icon: createIcon(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 3 }
                 ],
                 points: 0, chests: [false, false, false], taskProgress: {}, claimed: {}
             },
             weekly: {
                 tasks: [
                     { id: 'w1', name: 'Complete Daily Quests', icon: createIcon(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
-                    { id: 'w2', name: 'Play Frozen Maw', icon: createIcon(icons.sword, '#06b6d4'), color: '#06b6d4', target: 5 },
-                    { id: 'w3', name: 'Play Cursed Heartwood', icon: createIcon(icons.shield, '#10b981'), color: '#10b981', target: 5 },
-                    { id: 'w4', name: 'Play Hall of Tomes', icon: createIcon(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 5 },
+                    { id: 'w2', name: 'Play Frozen Maw', icon: createIcon(icons.sword, '#06b6d4'), color: '#06b6d4', target: 10 },
+                    { id: 'w3', name: 'Play Cursed Heartwood', icon: createIcon(icons.shield, '#10b981'), color: '#10b981', target: 10 },
+                    { id: 'w4', name: 'Play Hall of Tomes', icon: createIcon(icons.book, '#8b5cf6'), color: '#8b5cf6', target: 10 },
                     { id: 'w5', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
-                    { id: 'w6', name: 'Deal Clan Boss Damage', icon: createIcon(icons.crown, '#dc2626'), color: '#dc2626', target: 5 },
-                    { id: 'w7', name: 'Reach New Dungeon Level', icon: createIcon(icons.castle, '#f59e0b'), color: '#f59e0b', target: 5 },
-                    { id: 'w8', name: 'Gain Player XP', icon: createIcon(icons.star, '#fbbf24'), color: '#fbbf24', target: 5 }
+                    { id: 'w6', name: 'Deal Clan Boss Damage', icon: createIcon(icons.crown, '#dc2626'), color: '#dc2626', target: 5 }
                 ],
                 points: 0, chests: [false, false, false], taskProgress: {}, claimed: {}
             },
             monthly: {
                 tasks: [
-                    { id: 'm1', name: 'Complete Daily Quests', icon: createIcon(icons.check, '#22c55e'), color: '#22c55e', target: 5 },
-                    { id: 'm2', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 5 },
+                    { id: 'm1', name: 'Complete Daily Quests', icon: createIcon(icons.check, '#22c55e'), color: '#22c55e', target: 20 },
+                    { id: 'm2', name: 'Attempt Doom Tower', icon: createIcon(icons.skull, '#ef4444'), color: '#ef4444', target: 15 },
                     { id: 'm3', name: 'Obtain Tier 1 Skill', icon: createIcon(icons.star, '#8b5cf6'), color: '#8b5cf6', target: 5 },
                     { id: 'm4', name: 'Obtain Tier 1 Pet', icon: createIcon(icons.pet, '#f97316'), color: '#f97316', target: 5 },
-                    { id: 'm5', name: 'Obtain Rare+ Skill or Pet', icon: createIcon(icons.gem, '#ec4899'), color: '#ec4899', target: 5 },
-                    { id: 'm6', name: 'Use Scrolls (Current Tier)', icon: createIcon(icons.scroll, '#fbbf24'), color: '#fbbf24', target: 5 },
-                    { id: 'm7', name: 'Use Scrolls (Current Tier+)', icon: createIcon(icons.scroll, '#f59e0b'), color: '#f59e0b', target: 5 },
-                    { id: 'm8', name: 'Use Cores (Current Tier)', icon: createIcon(icons.gem, '#6366f1'), color: '#6366f1', target: 5 }
+                    { id: 'm5', name: 'Obtain Rare+ Skill or Pet', icon: createIcon(icons.gem, '#ec4899'), color: '#ec4899', target: 3 },
+                    { id: 'm6', name: 'Use Scrolls (Current Tier)', icon: createIcon(icons.scroll, '#fbbf24'), color: '#fbbf24', target: 10 }
                 ],
                 points: 0, chests: [false, false, false], taskProgress: {}, claimed: {}
             }
@@ -2328,17 +2318,55 @@
             });
         }
 
-        function updateTimers() {
-            const now = new Date();
-            const dayOfWeek = now.getDay();
-            const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
-            const weeklyTimerText = `${daysUntilMonday} day${daysUntilMonday > 1 ? 's' : ''} until reset`;
-            document.getElementById('weekly-timer').textContent = weeklyTimerText;
+        let debugDayOffset = 0;
 
-            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-            const daysUntilMonthEnd = lastDayOfMonth.getDate() - now.getDate();
-            const monthlyTimerText = `${daysUntilMonthEnd} day${daysUntilMonthEnd > 1 ? 's' : ''} until reset`;
-            document.getElementById('monthly-timer').textContent = monthlyTimerText;
+        function getSimulatedNow() {
+            const now = new Date();
+            now.setDate(now.getDate() + debugDayOffset);
+            return now;
+        }
+
+        function formatResetTimer(msRemaining) {
+            if (msRemaining <= 0) return 'Resetting...';
+            const totalSecs = Math.floor(msRemaining / 1000);
+            const days = Math.floor(totalSecs / 86400);
+            const hrs = Math.floor((totalSecs % 86400) / 3600);
+            const mins = Math.floor((totalSecs % 3600) / 60);
+            const secs = totalSecs % 60;
+            if (days >= 1) {
+                return `${days}d ${hrs}h until reset`;
+            }
+            return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')} until reset`;
+        }
+
+        function updateTimers() {
+            const now = getSimulatedNow();
+
+            // Daily: resets at next 00:00 UTC
+            const nextDailyReset = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+            const dailyMs = nextDailyReset - now;
+            const dailyEl = document.getElementById('daily-timer');
+            if (dailyEl) dailyEl.textContent = formatResetTimer(dailyMs);
+
+            // Weekly: resets next Monday 00:00 UTC
+            const dayOfWeek = now.getUTCDay();
+            const daysUntilMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 7 : (8 - dayOfWeek);
+            const nextWeeklyReset = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday, 0, 0, 0));
+            const weeklyMs = nextWeeklyReset - now;
+            const weeklyEl = document.getElementById('weekly-timer');
+            if (weeklyEl) weeklyEl.textContent = formatResetTimer(weeklyMs);
+
+            // Monthly: resets 1st of next month 00:00 UTC
+            const nextMonthlyReset = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0));
+            const monthlyMs = nextMonthlyReset - now;
+            const monthlyEl = document.getElementById('monthly-timer');
+            if (monthlyEl) monthlyEl.textContent = formatResetTimer(monthlyMs);
+        }
+
+        function addDebugDays(days) {
+            debugDayOffset += days;
+            updateTimers();
+            updateDebugInfo();
         }
 
         function hasClaimable(tabName) {
@@ -2434,9 +2462,11 @@
 
                 const isDisabled = status === 'collected' ? 'disabled' : '';
                 return `<div class="task-item ${itemClass}">
-                    <div class="task-icon">${task.icon}</div>
                     <div class="task-info">
-                        <div class="task-name">${task.name}</div>
+                        <div class="task-name-row">
+                            <span class="task-name">${task.name}</span>
+                            <span class="task-points">${createIcon(icons.star, '#fbbf24', 14)} +10</span>
+                        </div>
                         <div class="task-progress-container">
                             <div class="task-progress-bar">
                                 <div class="task-progress-fill" style="width:${pct}%"></div>
@@ -2444,10 +2474,7 @@
                             <span class="task-progress-text">${prog}/${task.target}</span>
                         </div>
                     </div>
-                    <div class="task-right">
-                        <div class="task-points">${createIcon(icons.star, '#fbbf24', 12)} 10</div>
-                        <button class="go-btn ${btnClass}" onclick="${btnAction}" ${isDisabled}>${btnText}</button>
-                    </div>
+                    <button class="go-btn ${btnClass}" onclick="${btnAction}" ${isDisabled}>${btnText}</button>
                 </div>`;
             }).join('');
         }
@@ -2492,17 +2519,17 @@
         }
 
         function showFloatingText(event) {
-            createFloatingText(event, '👆 Destiny awaits...');
+            createFloatingText(event, 'Navigating to destination');
         }
 
         function showLockText(event, needed) {
-            createFloatingText(event, `🔒 Earn ${needed} favour to unlock`);
+            createFloatingText(event, `🔒 ${needed} pts to unlock`);
         }
         function claimTask(tabName, taskId) {
             const data = questData[tabName];
             if (data.taskProgress[taskId] >= data.tasks.find(t => t.id === taskId).target && !data.claimed[taskId]) {
                 data.claimed[taskId] = true;
-                data.points = Math.min(120, data.points + 10);
+                data.points = Math.min(60, data.points + 10);
                 renderTasks(tabName);
                 updateProgressDisplay(tabName);
             }
@@ -2604,12 +2631,12 @@
         }
         function addPoints(amt) {
             if (currentTab === 'session') return;
-            questData[currentTab].points = Math.max(0, Math.min(120, questData[currentTab].points + amt));
+            questData[currentTab].points = Math.max(0, Math.min(60, questData[currentTab].points + amt));
             updateProgressDisplay(currentTab);
         }
         function setPoints(amt) {
             if (currentTab === 'session') return;
-            questData[currentTab].points = Math.min(120, Math.max(0, amt));
+            questData[currentTab].points = Math.min(60, Math.max(0, amt));
             updateProgressDisplay(currentTab);
         }
         function progressNextTask() {
@@ -2665,7 +2692,7 @@
 
         function claimAllChests() {
             if (currentTab === 'session') return;
-            questData[currentTab].chests = [true, true, true, true, true];
+            questData[currentTab].chests = [true, true, true];
             renderChests(currentTab);
             updateRedDots();
             updateDebugInfo();
@@ -2678,7 +2705,7 @@
             }
             const data = questData[currentTab];
             data.points = 0;
-            data.chests = [false, false, false, false, false];
+            data.chests = [false, false, false];
             data.tasks.forEach(t => {
                 data.taskProgress[t.id] = 0;
                 data.claimed[t.id] = false;
@@ -2692,7 +2719,7 @@
             ['daily', 'weekly', 'monthly'].forEach(tabName => {
                 const data = questData[tabName];
                 data.points = 0;
-                data.chests = [false, false, false, false, false];
+                data.chests = [false, false, false];
                 data.tasks.forEach(task => {
                     data.taskProgress[task.id] = 0;
                     data.claimed[task.id] = false;
@@ -2713,9 +2740,11 @@
             } else {
                 const data = questData[currentTab];
                 document.getElementById('debug-current-points').textContent = data.points;
-                document.getElementById('debug-chests-claimed').textContent = `${data.chests.filter(c => c).length}/5`;
+                document.getElementById('debug-chests-claimed').textContent = `${data.chests.filter(c => c).length}/3`;
                 document.getElementById('debug-tasks-done').textContent = `${data.tasks.filter(t => data.claimed[t.id]).length}/${data.tasks.length}`;
             }
+            const dayOffsetEl = document.getElementById('debug-day-offset');
+            if (dayOffsetEl) dayOffsetEl.textContent = debugDayOffset === 0 ? '0' : `${debugDayOffset > 0 ? '+' : ''}${debugDayOffset}d`;
         }
 
         // Inject Main Screen Icon
@@ -2774,12 +2803,12 @@
                             <div class="session-reward-card">
                                 <div class="session-icon-box">${ms.reward.icon}</div>
                                 <div class="session-card-content">
-                                    <div class="session-card-time">${ms.minutes} MIN</div>
+                                    <div class="session-card-time" id="session-time-${ms.id}">${formatMilestoneTime(ms.minutes)}</div>
                                     <div class="session-card-title">${ms.reward.name}${scaledAmount ? ' ' + scaledAmount : ''}</div>
                                 </div>
                                 <div class="session-btn-area">
                                     <button class="session-btn-claim" id="session-btn-${ms.id}" onclick="handleSessionClaim('${ms.id}', this)">
-                                        Soon
+                                        ${formatMilestoneTime(ms.minutes)}
                                     </button>
                                     <div class="session-stamp-wrap">
                                         <div class="session-stamp-icon">
@@ -2828,12 +2857,23 @@
             if (currentTab === 'session') calculateSessionPacing();
         });
 
+        function formatSessionCountdown(ms) {
+            const currentTotal = sessionState.playtimeMinutes + (sessionSecondsCounter / 60);
+            const remaining = ms.minutes - currentTotal;
+            if (remaining <= 0) return formatMilestoneTime(ms.minutes);
+            const totalSecs = Math.ceil(remaining * 60);
+            const m = Math.floor(totalSecs / 60);
+            const s = totalSecs % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
         function updateSessionCardStates() {
             let foundNext = false;
 
             sessionMilestones.forEach(ms => {
                 const row = document.getElementById(`session-row-${ms.id}`);
                 const btn = document.getElementById(`session-btn-${ms.id}`);
+                const timeEl = document.getElementById(`session-time-${ms.id}`);
                 if (!row || !btn) return;
 
                 row.classList.remove('next-up', 'active', 'claimed');
@@ -2844,15 +2884,15 @@
 
                 if (claimed) {
                     row.classList.add('claimed');
+                    if (timeEl) timeEl.innerText = formatMilestoneTime(ms.minutes);
                 } else if (unlocked) {
                     row.classList.add('active');
                     btn.innerText = ms.isChoice ? 'CHOOSE' : 'CLAIM';
                     btn.classList.add('ready');
+                    if (timeEl) timeEl.innerText = formatMilestoneTime(ms.minutes);
                 } else {
-                    const timeLeft = ms.minutes - sessionState.playtimeMinutes;
-                    if (timeLeft > 30) btn.innerText = 'Soon';
-                    else if (timeLeft > 15) btn.innerText = 'Hold tight';
-                    else btn.innerText = 'Almost...';
+                    if (timeEl) timeEl.innerText = formatSessionCountdown(ms);
+                    btn.innerText = formatSessionCountdown(ms);
 
                     if (!foundNext) {
                         row.classList.add('next-up');
@@ -2962,15 +3002,15 @@
             }
 
             if (anyReady) {
-                if (timerEl) timerEl.innerText = "READY TO CLAIM!";
-                if (sentenceEl) sentenceEl.innerText = "Done. Take it.";
+                if (timerEl) timerEl.innerText = "Reward ready!";
+                if (sentenceEl) sentenceEl.innerText = "";
                 updateSessionLiquidBar();
                 return;
             }
 
             if (!nextMs) {
-                if (timerEl) timerEl.innerText = "All rewards unlocked";
-                if (sentenceEl) sentenceEl.innerText = "Just waiting for you to claim them.";
+                if (timerEl) timerEl.innerText = "";
+                if (sentenceEl) sentenceEl.innerText = "";
                 updateSessionLiquidBar();
                 return;
             }
@@ -2981,13 +3021,7 @@
                 timerEl.innerText = `Next reward in ${m}m`;
             }
 
-            // Dynamic sentences based on time left
-            if (sentenceEl) {
-                if (m > 20) sentenceEl.innerText = "Reward’s busy becoming awesome.";
-                else if (m > 15) sentenceEl.innerText = "It’s getting better by the minute.";
-                else if (m > 5) sentenceEl.innerText = "Almost done cooking.";
-                else sentenceEl.innerText = "Just about ready.";
-            }
+            if (sentenceEl) sentenceEl.innerText = "";
 
             // Also update the vertical liquid track
             updateSessionLiquidBar();
@@ -3212,8 +3246,9 @@
         }
 
 
-        // Update session header and footer every second
+        // Update timers every second
         setInterval(() => {
+            updateTimers();
             if (currentTab === 'session') {
                 updateSessionHeader();
                 updateSessionFooter();
